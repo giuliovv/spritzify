@@ -1,0 +1,10 @@
+import { Suspense } from 'react';
+import OrderPage from '../../../../components/OrderPage';
+
+export default function BarPage({ params, searchParams }) {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <OrderPage barId={params.barId} tableNumber={params.tableId} />
+    </Suspense>
+  );
+}
