@@ -6,9 +6,9 @@ const bars = [
         name: 'Beach 100',
         theme: 'from-purple-600 to-indigo-600',
         menu: [
-            { id: 'item1', name: 'Margarita', price: 12 },
-            { id: 'item2', name: 'Old Fashioned', price: 15 },
-            { id: 'item3', name: 'Mojito', price: 10 },
+            { id: 1, name: 'Margarita', price: 12, icon: '🍹' },
+            { id: 2, name: 'Old Fashioned', price: 15, icon: '🥃' },
+            { id: 3, name: 'Mojito', price: 10, icon: '🍸' },
         ]
     },
     {
@@ -16,9 +16,9 @@ const bars = [
         name: 'Chill Vibes',
         theme: 'from-green-600 to-blue-600',
         menu: [
-            { id: 'item4', name: 'Gin Tonic', price: 11 },
-            { id: 'item5', name: 'Whiskey Sour', price: 14 },
-            { id: 'item6', name: 'Pina Colada', price: 13 },
+            { id: 1, name: 'Margarita', price: 12, icon: '🍹' },
+            { id: 2, name: 'Old Fashioned', price: 15, icon: '🥃' },
+            { id: 3, name: 'Mojito', price: 10, icon: '🍸' },
         ]
     }
 ];
