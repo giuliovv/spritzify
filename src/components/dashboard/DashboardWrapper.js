@@ -1,4 +1,4 @@
-// src/components/DashboardWrapper.js
+// src/components/dashboard/DashboardWrapper.js
 
 "use client"
 import { useEffect, useState } from 'react';
