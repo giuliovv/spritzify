@@ -12,13 +12,13 @@ const OrderList = ({ orders, onStatusChange }) => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-2 text-black">Ordini recenti</h2>
+      <h2 className="text-xl font-semibold mb-2 text-white">Ordini recenti</h2>
       {orders.length === 0 ? (
         <p className="text-black">Non ci sono ordini per ora.</p>
       ) : (
         Object.keys(groupedOrders).map((tableNumber) => (
           <div key={tableNumber} className="mb-4">
-            <h3 className="text-lg font-bold text-black">Ombrellone numero: {tableNumber}</h3>
+            <h3 className="text-lg font-bold text-white">Ombrellone numero: {tableNumber}</h3>
             <ul className="space-y-4">
               {groupedOrders[tableNumber].map((order) => (
                 <li key={order.id} className="bg-white shadow rounded-lg p-4 text-black">
