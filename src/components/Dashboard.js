@@ -37,12 +37,12 @@ const Dashboard = ({ barId }) => {
     return () => unsubscribe();
   }, [barId]);
 
-  if (loading) return <div>Loading orders...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <div>Caricamento ordini...</div>;
+  if (error) return <div>Errore: {error}</div>;
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Dashboard for Bar {barId}</h1>
+      <h1 className="text-2xl font-bold mb-4">Dashboard per Bar {barId}</h1>
       <OrderList orders={orders} />
     </div>
   );
