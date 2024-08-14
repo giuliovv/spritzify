@@ -1,7 +1,7 @@
 // src/app/dashboard/[barId]
 
 import { Suspense } from 'react';
-import DashboardWrapper from '../../../components/DashboardWrapper';
+import DashboardWrapper from '../../../components/dashboard/DashboardWrapper';
 
 export default function BarPage({ params }) {
   return (

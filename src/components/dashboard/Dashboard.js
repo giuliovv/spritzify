@@ -3,7 +3,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { collection, query, where, onSnapshot, orderBy, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig';
+import { db } from '../../firebase/firebaseConfig';
 import OrderList from './OrderList';
 
 const Dashboard = ({ barId }) => {

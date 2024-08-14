@@ -56,7 +56,7 @@ const OrderList = ({ orders, onStatusChange }) => {
                     onClick={() => onStatusChange(order.id)}
                     className="mt-4 bg-blue-500 text-white py-1 px-4 rounded"
                   >
-                    Mark as Shipped
+                    Segna come inviato
                   </button>
                 </li>
               ))}

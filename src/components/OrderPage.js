@@ -1,3 +1,5 @@
+// src/components/OrderPage.js
+
 "use client"
 
 import { useState, useEffect } from 'react';
@@ -6,6 +8,7 @@ import bars from '../constants';
 import { doc, getDoc, collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import { Sun, Umbrella, Martini } from 'lucide-react';
+import Image from 'next/image';
 
 export default function OrderPage({ barId, tableNumber }) {
   const [bar, setBar] = useState(null);
@@ -13,6 +16,11 @@ export default function OrderPage({ barId, tableNumber }) {
   const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const drinkCount = order.reduce((counts, item) => {
+    counts[item.id] = (counts[item.id] || 0) + 1;
+    return counts;
+  }, {});
 
   useEffect(() => {
     const selectedBar = bars.find(b => b.id === barId);
@@ -23,21 +31,36 @@ export default function OrderPage({ barId, tableNumber }) {
     setOrder([...order, item]);
   };
 
+  const removeFromOrder = (item) => {
+    const index = order.findIndex(i => i.id === item.id);
+    if (index !== -1) {
+      const newOrder = [...order];
+      newOrder.splice(index, 1);
+      setOrder(newOrder);
+    }
+  };
+
   const placeOrder = async () => {
     setIsLoading(true);
     setError(null);
     try {
+      const uniqueItems = Array.from(new Set(order.map(item => item.id)))
+        .map(id => {
+          const item = order.find(i => i.id === id);
+          return {
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: drinkCount[item.id],
+          };
+        });
+
       const orderData = {
         barId,
         tableNumber,
-        items: order.map(item => ({
-          id: item.id,
-          name: item.name,
-          price: item.price,
-          quantity: 1
-        })),
+        items: uniqueItems,
         status: 'pending',
-        totalAmount: order.reduce((sum, item) => sum + item.price, 0),
+        totalAmount: uniqueItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
         createdAt: serverTimestamp(),
       };
 
@@ -69,7 +92,7 @@ export default function OrderPage({ barId, tableNumber }) {
           transition={{ duration: 0.5 }}
           className="text-5xl font-bold text-white mb-2 flex items-center justify-center"
         >
-          <Sun className="mr-2" /> {barId}
+          <Sun className="mr-2" /> {bar.name}
         </motion.h1>
         <motion.p 
           initial={{ y: 20, opacity: 0 }}
@@ -92,21 +115,45 @@ export default function OrderPage({ barId, tableNumber }) {
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  <div>
-                    <h3 className="text-xl font-semibold">{drink.icon} {drink.name}</h3>
-                    <p className="text-gray-600">${drink.price}</p>
+                  <div className="flex items-center">
+                    <Image
+                      src={drink.image}
+                      alt={drink.name}
+                      width={40}
+                      height={40}
+                      className="mr-4"
+                    />
+                    <div>
+                      <h3 className="text-xl font-semibold">
+                        {drink.icon} {drink.name} 
+                      </h3>
+                      <p className="text-gray-600">${drink.price}</p>
+                      {drinkCount[drink.id] > 0 && (
+                        <p className="text-gray-700">Nel carrello: {drinkCount[drink.id]}</p>
+                      )}
+                    </div>
                   </div>
-                  <button
-                    onClick={() => addToOrder(drink)}
-                    className="bg-yellow-400 text-blue-900 px-4 py-2 rounded-full hover:bg-yellow-300 transition duration-300"
-                  >
-                    Add
-                  </button>
+                  <div className="flex items-center">
+                    {drinkCount[drink.id] > 0 && (
+                      <button
+                        onClick={() => removeFromOrder(drink)}
+                        className="bg-red-400 text-white px-2 py-1 rounded-full hover:bg-red-300 transition duration-300 mr-2"
+                      >
+                        -
+                      </button>
+                    )}
+                    <button
+                      onClick={() => addToOrder(drink)}
+                      className="bg-yellow-400 text-blue-900 px-2 py-1 rounded-full hover:bg-yellow-300 transition duration-300"
+                    >
+                      +
+                    </button>
+                  </div>
                 </motion.div>
               ))}
             </div>
             <div className="text-center">
-              <p className="mb-4">Ordini totali: {order.length}</p>
+              {/* <p className="mb-4">Ordini totali: {order.length}</p> */}
               <button
                 onClick={placeOrder}
                 disabled={order.length === 0 || isLoading}
