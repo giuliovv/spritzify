@@ -28,7 +28,7 @@ const OrderList = ({ orders }) => {
                 <ul className="list-disc list-inside">
                   {order.items.map((item, index) => (
                     <li key={index}>
-                      {item.name} - Quantita': {item.quantity} - Prezzo: ${item.price.toFixed(2)}
+                      {item.name} - Quantitá: {item.quantity} - Prezzo: ${item.price.toFixed(2)}
                     </li>
                   ))}
                 </ul>
