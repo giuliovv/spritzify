@@ -10,9 +10,9 @@ const bars = [
             { id: 2, name: 'Old Fashioned', price: 15, icon: '🥃', image: "/old_fashioned_image.webp" },
             { id: 3, name: 'Mojito', price: 10, icon: '🍸', image: "/mojito_image.webp" },
             { id: 4, name: 'Spritz Aperol', price: 3, icon: '🥂', image: "/spritz_image.webp" },
-            { id: 4, name: 'Spritz Campari', price: 3, icon: '🥂', image: "/spritz_campari_image.webp" },
-            { id: 5, name: 'Birra', price: 6, icon: '🍺', image: "/beer_image.webp" },
-            { id: 6, name: 'Prosecchino', price: 7, icon: '🍷', image: "/prosecco_image.webp" }
+            { id: 5, name: 'Spritz Campari', price: 3, icon: '🥂', image: "/spritz_campari_image.webp" },
+            { id: 6, name: 'Birra', price: 6, icon: '🍺', image: "/beer_image.webp" },
+            { id: 7, name: 'Prosecchino', price: 7, icon: '🍷', image: "/prosecco_image.webp" }
         ]
     },
     {
