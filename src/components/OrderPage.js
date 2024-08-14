@@ -124,7 +124,7 @@ export default function OrderPage({ barId, tableNumber }) {
             className="text-center"
           >
             <Martini size={64} className="mx-auto mb-4 text-teal-500" />
-            <h2 className="text-2xl font-bold mb-4 text-teal-800">L'ordine ha avuto successo!</h2>
+            <h2 className="text-2xl font-bold mb-4 text-teal-800">L&apos;ordine ha avuto successo!</h2>
             <p className="text-gray-600 mb-6">Il tuo ordine arriverá presto.</p>
             <button
               onClick={startNewOrder}
