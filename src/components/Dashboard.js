@@ -1,7 +1,8 @@
 // src/components/Dashboard.js
+
 "use client"
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, orderBy, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 import OrderList from './OrderList';
 
@@ -14,7 +15,8 @@ const Dashboard = ({ barId }) => {
     const ordersQuery = query(
       collection(db, 'orders'),
       where('barId', '==', barId),
-      orderBy('createdAt', 'desc')
+      where('status', '==', 'pending'),
+      orderBy('createdAt', 'asc')
     );
 
     const unsubscribe = onSnapshot(ordersQuery,
@@ -28,7 +30,7 @@ const Dashboard = ({ barId }) => {
       },
       (err) => {
         console.error('Error fetching orders: ', err);
-        setError('Failed to fetch orders. Please try again.');
+        setError('Non riesco a caricare gli ordini. Per favore riprova.');
         setLoading(false);
       }
     );
@@ -37,13 +39,23 @@ const Dashboard = ({ barId }) => {
     return () => unsubscribe();
   }, [barId]);
 
+  const handleStatusChange = async (orderId) => {
+    try {
+      const orderRef = doc(db, 'orders', orderId);
+      await updateDoc(orderRef, { status: 'shipped' });
+    } catch (err) {
+      console.error('Error updating order status: ', err);
+      setError('Non riesco ad aggiornare lo stato degli ordini. Per favore riprova.');
+    }
+  };
+
   if (loading) return <div>Caricamento ordini...</div>;
   if (error) return <div>Errore: {error}</div>;
 
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Dashboard per Bar {barId}</h1>
-      <OrderList orders={orders} />
+      <OrderList orders={orders} onStatusChange={handleStatusChange} />
     </div>
   );
 };
