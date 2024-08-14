@@ -25,7 +25,7 @@ export default function QRCodeGenerator() {
     <div className="space-y-4">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label htmlFor="barSelect" className="block text-white mb-2">Select Bar:</label>
+          <label htmlFor="barSelect" className="block text-white mb-2">Seleziona Bar:</label>
           <select
             id="barSelect"
             value={selectedBar}
@@ -33,14 +33,14 @@ export default function QRCodeGenerator() {
             className="w-full px-3 py-2 rounded bg-white bg-opacity-50 text-purple-900"
             required
           >
-            <option value="">Select a bar</option>
+            <option value="">Seleziona bar</option>
             {bars.map((bar) => (
               <option key={bar.id} value={bar.id}>{bar.name}</option>
             ))}
           </select>
         </div>
         <div>
-          <label htmlFor="tableNumber" className="block text-white mb-2">Table Number:</label>
+          <label htmlFor="tableNumber" className="block text-white mb-2">Ombrellone numero:</label>
           <input
             type="number"
             id="tableNumber"
@@ -51,13 +51,13 @@ export default function QRCodeGenerator() {
           />
         </div>
         <button type="submit" className="w-full bg-yellow-400 text-purple-900 py-2 rounded-full hover:bg-yellow-300 transition duration-300">
-          Generate QR Code URL
+          Genera QR Code
         </button>
       </form>
 
       {qrCodeUrl && (
         <div className="mt-8 text-center">
-          <h2 className="text-xl text-white mb-4">Scan this QR Code:</h2>
+          <h2 className="text-xl text-white mb-4">Scansiona questo QR Code:</h2>
           <QRCode value={qrCodeUrl} size={256} bgColor={"#ffffff"} fgColor={"#000000"} level={"H"} />
           <p className="mt-4 text-white">{qrCodeUrl}</p>
         </div>
