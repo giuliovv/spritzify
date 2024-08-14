@@ -1,8 +1,11 @@
-// src/components/OrderList.js
 import React from 'react';
 
 const OrderList = ({ orders, onStatusChange }) => {
-  const groupedOrders = orders.reduce((acc, order) => {
+  // Sort orders by createdAt globally
+  const sortedOrders = orders.sort((a, b) => a.createdAt.seconds - b.createdAt.seconds);
+
+  // Group sorted orders by tableNumber, preserving the global order
+  const groupedOrders = sortedOrders.reduce((acc, order) => {
     if (!acc[order.tableNumber]) {
       acc[order.tableNumber] = [];
     }
@@ -10,13 +13,20 @@ const OrderList = ({ orders, onStatusChange }) => {
     return acc;
   }, {});
 
+  // Extract the order of table numbers based on first appearance in the sorted list
+  const orderedTableNumbers = Object.keys(groupedOrders).sort((a, b) => {
+    const firstOrderA = groupedOrders[a][0].createdAt.seconds;
+    const firstOrderB = groupedOrders[b][0].createdAt.seconds;
+    return firstOrderA - firstOrderB;
+  });
+
   return (
     <div>
       <h2 className="text-xl font-semibold mb-2 text-white">Ordini recenti</h2>
-      {orders.length === 0 ? (
-        <p className="text-black">Non ci sono ordini per ora.</p>
+      {sortedOrders.length === 0 ? (
+        <p className="text-white">Non ci sono ordini per ora.</p>
       ) : (
-        Object.keys(groupedOrders).map((tableNumber) => (
+        orderedTableNumbers.map((tableNumber) => (
           <div key={tableNumber} className="mb-4">
             <h3 className="text-lg font-bold text-white">Ombrellone numero: {tableNumber}</h3>
             <ul className="space-y-4">
@@ -46,7 +56,7 @@ const OrderList = ({ orders, onStatusChange }) => {
                     onClick={() => onStatusChange(order.id)}
                     className="mt-4 bg-blue-500 text-white py-1 px-4 rounded"
                   >
-                    Segna come consegnato
+                    Mark as Shipped
                   </button>
                 </li>
               ))}

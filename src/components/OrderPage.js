@@ -69,7 +69,7 @@ export default function OrderPage({ barId, tableNumber }) {
           transition={{ duration: 0.5 }}
           className="text-5xl font-bold text-white mb-2 flex items-center justify-center"
         >
-          <Sun className="mr-2" /> Beach 100
+          <Sun className="mr-2" /> {barId}
         </motion.h1>
         <motion.p 
           initial={{ y: 20, opacity: 0 }}
@@ -106,13 +106,13 @@ export default function OrderPage({ barId, tableNumber }) {
               ))}
             </div>
             <div className="text-center">
-              <p className="mb-4">Total Items: {order.length}</p>
+              <p className="mb-4">Ordini totali: {order.length}</p>
               <button
                 onClick={placeOrder}
                 disabled={order.length === 0 || isLoading}
                 className="bg-teal-500 text-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-teal-400 transition duration-300 disabled:opacity-50"
               >
-                {isLoading ? 'Placing Order...' : 'Place Order'}
+                {isLoading ? 'Ordine in corso...' : 'Ordina'}
               </button>
             </div>
           </>
@@ -124,13 +124,13 @@ export default function OrderPage({ barId, tableNumber }) {
             className="text-center"
           >
             <Martini size={64} className="mx-auto mb-4 text-teal-500" />
-            <h2 className="text-2xl font-bold mb-4 text-teal-800">Order Placed Successfully!</h2>
-            <p className="text-gray-600 mb-6">Your drinks will be served shortly. Enjoy your time at Beach 100!</p>
+            <h2 className="text-2xl font-bold mb-4 text-teal-800">L'ordine ha avuto successo!</h2>
+            <p className="text-gray-600 mb-6">Il tuo ordine arriverá presto.</p>
             <button
               onClick={startNewOrder}
               className="bg-blue-500 text-white px-6 py-2 rounded-full text-lg font-semibold hover:bg-blue-400 transition duration-300"
             >
-              Place Another Order
+              {"Ordina qualcos'altro"}
             </button>
           </motion.div>
         )}
