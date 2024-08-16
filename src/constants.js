@@ -3,7 +3,7 @@
 const bars = [
     {
         id: 'beach100',
-        name: 'Beach 100',
+        name: '100 Beach',
         theme: 'from-purple-600 to-indigo-600',
         menu: [
             { id: 1, name: 'Margarita', price: 12, icon: '🍹', image: "/margarita_image.webp" },
