@@ -10,6 +10,10 @@ import { db } from '../firebase/firebaseConfig';
 import { Sun, Umbrella, Martini } from 'lucide-react';
 import Image from 'next/image';
 
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
 export default function OrderPage({ barId, tableNumber }) {
   const [bar, setBar] = useState(null);
   const [order, setOrder] = useState([]);
@@ -40,35 +44,55 @@ export default function OrderPage({ barId, tableNumber }) {
     }
   };
 
+  // Per ora l'ordine è uploadato su firestore prima che venga pagato. Post MVP cambiare logiche 
   const placeOrder = async () => {
     setIsLoading(true);
     setError(null);
+  
     try {
+      console.log('Placing order...');
       const uniqueItems = Array.from(new Set(order.map(item => item.id)))
         .map(id => {
           const item = order.find(i => i.id === id);
           return {
-            id: item.id,
-            name: item.name,
-            price: item.price,
-            quantity: drinkCount[item.id],
+            name: item.name,         // Product name
+            price: item.price,       // Product price
+            quantity: drinkCount[item.id],  // Product quantity
           };
         });
-
-      const orderData = {
-        barId,
-        tableNumber,
-        items: uniqueItems,
-        status: 'pending',
-        totalAmount: uniqueItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-        createdAt: serverTimestamp(),
-      };
-
-      const docRef = await addDoc(collection(db, 'orders'), orderData);
-      console.log('Order placed with ID: ', docRef.id);
-      setIsOrderPlaced(true);
+  
+      console.log('Unique items:', uniqueItems);
+  
+      const stripe = await stripePromise;
+      const response = await fetch('/api/checkout_sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ items: uniqueItems }),
+      });
+  
+      console.log('Response status:', response.status);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      console.log('Response data:', data);
+  
+      if (!data.sessionId) {
+        throw new Error('No sessionId in response');
+      }
+  
+      // Redirect to Stripe Checkout
+      const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
+  
+      if (result.error) {
+        setError(result.error.message);
+      }
     } catch (err) {
-      console.error('Error placing order: ', err);
+      console.error('Error placing order:', err);
       setError('Failed to place order. Please try again.');
     } finally {
       setIsLoading(false);
@@ -127,7 +151,7 @@ export default function OrderPage({ barId, tableNumber }) {
                       <h3 className="text-xl font-semibold">
                         {drink.icon} {drink.name} 
                       </h3>
-                      <p className="text-gray-600">${drink.price}</p>
+                      <p className="text-gray-600">€{drink.price}</p>
                       {drinkCount[drink.id] > 0 && (
                         <p className="text-gray-700">Nel carrello: {drinkCount[drink.id]}</p>
                       )}
