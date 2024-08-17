@@ -2,7 +2,7 @@
 
 export default function CancelPage() {
     const handleRetryOrderClick = () => {
-        window.location.href = '/bar/beach100/1'; /// Path hardcodado, da cambiare dopo MVP
+        window.location.href = '/bar/100beach/1'; /// Path hardcodado, da cambiare dopo MVP
     };
 
     return (
@@ -25,7 +25,7 @@ export default function CancelPage() {
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-red-800 mb-2">
-            L'ordine è stato annullato!
+            L&apos;ordine è stato annullato!
           </h1>
           <p className="text-gray-600 mb-6">Non è stato effettuato alcun pagamento.</p>
           <button

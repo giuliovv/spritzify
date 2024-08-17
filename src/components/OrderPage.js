@@ -62,7 +62,20 @@ export default function OrderPage({ barId, tableNumber }) {
         });
   
       console.log('Unique items:', uniqueItems);
-  
+      
+      const orderData = {
+        barId,
+        tableNumber,
+        items: uniqueItems,
+        status: 'pending',
+        totalAmount: uniqueItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
+        createdAt: serverTimestamp(),
+      };
+
+      const docRef = await addDoc(collection(db, 'orders'), orderData);
+      console.log('Order placed with ID: ', docRef.id);
+      setIsOrderPlaced(true);
+
       const stripe = await stripePromise;
       const response = await fetch('/api/checkout_sessions', {
         method: 'POST',
@@ -129,8 +142,6 @@ export default function OrderPage({ barId, tableNumber }) {
       </header>
 
       <main className="max-w-md mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg">
-        {!isOrderPlaced ? (
-          <>
             <div className="grid gap-4 mb-8">
               {bar.menu.map((drink) => (
                 <motion.div
@@ -186,25 +197,6 @@ export default function OrderPage({ barId, tableNumber }) {
                 {isLoading ? 'Ordine in corso...' : 'Ordina'}
               </button>
             </div>
-          </>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <Martini size={64} className="mx-auto mb-4 text-teal-500" />
-            <h2 className="text-2xl font-bold mb-4 text-teal-800">L&apos;ordine ha avuto successo!</h2>
-            <p className="text-gray-600 mb-6">Il tuo ordine arriverá presto.</p>
-            <button
-              onClick={startNewOrder}
-              className="bg-blue-500 text-white px-6 py-2 rounded-full text-lg font-semibold hover:bg-blue-400 transition duration-300"
-            >
-              Ordina qualcos&apos;altro
-            </button>
-          </motion.div>
-        )}
       </main>
     </div>
   );

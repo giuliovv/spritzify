@@ -2,7 +2,7 @@
 
 export default function SuccessPage() {
     const handleOrderMoreClick = () => {
-        window.location.href = '/bar/beach100/1'; // Path hardcodado, da cambiare dopo MVP
+        window.location.href = '/bar/100beach/1'; // Path hardcodado, da cambiare dopo MVP
     };
 
     return (
@@ -25,7 +25,7 @@ export default function SuccessPage() {
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-teal-800 mb-2">
-            L'ordine ha avuto successo!
+            L&apos;ordine ha avuto successo!
           </h1>
           <p className="text-gray-600 mb-6">Il tuo ordine arriverá presto.</p>
           <button

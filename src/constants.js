@@ -2,7 +2,7 @@
 
 const bars = [
     {
-        id: 'beach100',
+        id: '100beach',
         name: '100 Beach',
         theme: 'from-purple-600 to-indigo-600',
         menu: [
