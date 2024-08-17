@@ -8,7 +8,8 @@ export async function POST(req) {
     const { items } = await req.json();
     console.log('Received items:', items);
 
-    const origin = req.headers.origin || 'http://localhost:3000'; // Fallback to localhost in development
+    const { nextUrl } = req;
+    const origin = nextUrl.origin || 'http://localhost:3000'; // Fallback to localhost in development
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
