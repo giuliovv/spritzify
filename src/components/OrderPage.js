@@ -46,56 +46,41 @@ export default function OrderPage({ barId, tableNumber }) {
     }
   };
 
-  // Per ora l'ordine è uploadato su firestore prima che venga pagato. Post MVP cambiare logiche 
   const placeOrder = async () => {
     setIsLoading(true);
     setError(null);
   
     try {
-      console.log('Placing order...');
       const uniqueItems = Array.from(new Set(order.map(item => item.id)))
         .map(id => {
           const item = order.find(i => i.id === id);
           return {
-            name: item.name,         // Product name
-            price: item.price,       // Product price
-            quantity: drinkCount[item.id],  // Product quantity
+            name: item.name,
+            price: item.price,
+            quantity: drinkCount[item.id],
           };
         });
   
-      console.log('Unique items:', uniqueItems);
-      
-      const orderData = {
-        barId,
-        tableNumber,
-        items: uniqueItems,
-        status: 'pending',
-        totalAmount: uniqueItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-        createdAt: serverTimestamp(),
-      };
-
-      const docRef = await addDoc(collection(db, 'orders'), orderData);
-      console.log('Order placed with ID: ', docRef.id);
-      setIsOrderPlaced(true);
-
+      const totalAmount = uniqueItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  
       const stripe = await stripePromise;
       const response = await fetch('/api/checkout_sessions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ items: uniqueItems }),
+        body: JSON.stringify({
+          items: uniqueItems,
+          barId, // Include barId
+          tableNumber, // Include tableNumber
+        }),
       });
-  
-      console.log('Response status:', response.status);
   
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
   
       const data = await response.json();
-      console.log('Response data:', data);
-  
       if (!data.sessionId) {
         throw new Error('No sessionId in response');
       }
@@ -113,11 +98,8 @@ export default function OrderPage({ barId, tableNumber }) {
       setIsLoading(false);
     }
   };
-
-  const startNewOrder = () => {
-    setOrder([]);
-    setIsOrderPlaced(false);
-  };
+  
+  
 
   if (error) return <div className="text-red-500 text-center">{error}</div>;
   if (!bar) return <div>Loading...</div>;
