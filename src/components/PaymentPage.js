@@ -1,4 +1,3 @@
-// src/components/PaymentPage.js
 "use client";
 
 import { useEffect, useState } from 'react';
@@ -7,6 +6,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import { CreditCard, DollarSign, Smartphone } from 'lucide-react';
 import { db } from '../firebase/firebaseConfig'; // Import Firestore database
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'; // Import Firestore methods
+import Footer from './Footer'; // Import Footer
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -115,8 +115,8 @@ export default function PaymentPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-teal-300 p-6 font-sans">
-      <div className="max-w-md mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg">
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-teal-300 p-6 font-sans flex flex-col justify-between">
+      <div className="max-w-md mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg mb-8">
         <h2 className="text-2xl font-bold mb-6 text-center">Sommario</h2>
 
         <div className="mb-6">
@@ -172,6 +172,7 @@ export default function PaymentPage() {
         {isLoading && <p className="mt-4 text-center">Processando il pagamento...</p>}
         {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
       </div>
+      <Footer className="mt-8" />
     </div>
   );
 }
