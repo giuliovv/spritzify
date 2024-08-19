@@ -10,7 +10,6 @@ export default function BarPage({ params }) {
       <Suspense fallback={<div>Loading...</div>}>
         <DashboardWrapper barId={params.barId} />
       </Suspense>
-      <Footer />
     </>
   );
 }

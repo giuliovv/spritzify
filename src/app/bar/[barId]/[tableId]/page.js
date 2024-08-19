@@ -8,7 +8,6 @@ export default function BarPage({ params, searchParams }) {
       <Suspense fallback={<div>Loading...</div>}>
         <OrderPage barId={params.barId} tableNumber={params.tableId} />
       </Suspense>
-      <Footer />
     </>
   );
 }

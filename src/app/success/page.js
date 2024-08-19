@@ -1,8 +1,7 @@
-// src/app/success/page.js
-
 "use client";
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import Footer from '../../components/Footer'; // Import Footer
 
 function SuccessPageContent() {
   const searchParams = useSearchParams();
@@ -14,7 +13,7 @@ function SuccessPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-teal-300 flex items-center justify-center">
+    <div className="flex-grow flex items-center justify-center">
       <div className="bg-white bg-opacity-20 p-8 rounded-xl backdrop-blur-md text-center shadow-lg">
         <div className="text-teal-500 mb-4">
           <svg
@@ -49,9 +48,11 @@ function SuccessPageContent() {
 
 export default function SuccessPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SuccessPageContent />
-    </Suspense>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-400 to-teal-300">
+      <Suspense fallback={<div>Loading...</div>}>
+        <SuccessPageContent />
+      </Suspense>
+      <Footer className="mt-8" />
+    </div>
   );
 }
-

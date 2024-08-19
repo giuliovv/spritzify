@@ -10,7 +10,6 @@ export default function LoginPage() {
       <Suspense fallback={<div>Loading...</div>}>
         <Login />
       </Suspense>
-      <Footer />
     </>
   );
 }

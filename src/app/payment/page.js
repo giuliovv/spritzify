@@ -10,7 +10,6 @@ export default function Payment() {
       <Suspense fallback={<div>Loading...</div>}>
         <PaymentPage />
       </Suspense>
-      <Footer />
     </>
   );
 }

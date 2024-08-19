@@ -1,5 +1,3 @@
-// src/app/cancel/page.js
-
 "use client";
 
 import { useSearchParams } from 'next/navigation';
@@ -16,7 +14,7 @@ function CancelPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-400 to-red-300 flex items-center justify-center">
+    <div className="flex-grow flex items-center justify-center">
       <div className="bg-white bg-opacity-20 p-8 rounded-xl backdrop-blur-md text-center shadow-lg">
         <div className="text-red-500 mb-4">
           <svg
@@ -51,11 +49,11 @@ function CancelPageContent() {
 
 export default function CancelPage() {
   return (
-    <>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-400 to-red-300">
       <Suspense fallback={<div>Loading...</div>}>
         <CancelPageContent />
       </Suspense>
-      <Footer />
-    </>
+      <Footer className="mt-8" />
+    </div>
   );
 }

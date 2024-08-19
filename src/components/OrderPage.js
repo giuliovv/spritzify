@@ -10,6 +10,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 import { loadStripe } from '@stripe/stripe-js';
+import Footer from './Footer';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -67,7 +68,7 @@ export default function OrderPage({ barId, tableNumber }) {
   if (!bar) return <div>Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-teal-300 p-6 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-teal-300 p-6 font-sans flex flex-col justify-between">
       <header className="text-center mb-12">
         <motion.h1
           initial={{ y: -50, opacity: 0 }}
@@ -86,8 +87,8 @@ export default function OrderPage({ barId, tableNumber }) {
           <Umbrella className="inline mr-2" /> {tableNumber < 1000 ? 'Ombrellone' : 'Tavolo'} {tableNumber%1000}
         </motion.p>
       </header>
-
-      <main className="max-w-md mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg">
+  
+      <main className="w-full max-w-xl mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg mb-8">
         <div className="grid gap-4 mb-8">
           {bar.menu.map((drink) => (
             <motion.div
@@ -143,6 +144,7 @@ export default function OrderPage({ barId, tableNumber }) {
           </button>
         </div>
       </main>
+      <Footer className="mt-8" />
     </div>
   );
 }
