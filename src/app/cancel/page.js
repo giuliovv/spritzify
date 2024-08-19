@@ -4,6 +4,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import Footer from '../../components/Footer';
 
 function CancelPageContent() {
   const searchParams = useSearchParams();
@@ -50,9 +51,11 @@ function CancelPageContent() {
 
 export default function CancelPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CancelPageContent />
-    </Suspense>
+    <>
+      <Suspense fallback={<div>Loading...</div>}>
+        <CancelPageContent />
+      </Suspense>
+      <Footer />
+    </>
   );
 }
-
