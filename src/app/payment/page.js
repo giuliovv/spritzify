@@ -2,12 +2,12 @@
 
 import { Suspense } from 'react';
 import PaymentPage from '../../components/PaymentPage';
-import Footer from '../../components/Footer';
+import LoadingCircle from '@/components/LoadingCircle';
 
 export default function Payment() {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingCircle />}>
         <PaymentPage />
       </Suspense>
     </>

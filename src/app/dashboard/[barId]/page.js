@@ -2,12 +2,12 @@
 
 import { Suspense } from 'react';
 import DashboardWrapper from '../../../components/dashboard/DashboardWrapper';
-import Footer from '../../../components/Footer';
+import LoadingCircle from '@/components/LoadingCircle';
 
 export default function BarPage({ params }) {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingCircle />}>
         <DashboardWrapper barId={params.barId} />
       </Suspense>
     </>

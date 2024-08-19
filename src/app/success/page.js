@@ -2,6 +2,7 @@
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import Footer from '../../components/Footer'; // Import Footer
+import LoadingCircle from '@/components/LoadingCircle';
 
 function SuccessPageContent() {
   const searchParams = useSearchParams();
@@ -49,7 +50,7 @@ function SuccessPageContent() {
 export default function SuccessPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-400 to-teal-300">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingCircle />}>
         <SuccessPageContent />
       </Suspense>
       <Footer className="mt-8" />

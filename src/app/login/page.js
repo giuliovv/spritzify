@@ -2,12 +2,12 @@
 
 import { Suspense } from 'react';
 import Login from '../../components/dashboard/Login';
-import Footer from '../../components/Footer';
+import LoadingCircle from '@/components/LoadingCircle';
 
 export default function LoginPage() {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingCircle />}>
         <Login />
       </Suspense>
     </>

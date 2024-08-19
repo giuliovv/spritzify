@@ -5,6 +5,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebase/firebaseConfig';
 import Dashboard from './Dashboard';
 import Footer from '../Footer'; // Import Footer
+import LoadingCircle from '../LoadingCircle';
 
 const DashboardWrapper = ({ barId }) => {
   const [user, setUser] = useState(null);
@@ -25,7 +26,9 @@ const DashboardWrapper = ({ barId }) => {
   }, [router, barId]);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    return (
+        <LoadingCircle />
+    );
   }
 
   if (!user) {

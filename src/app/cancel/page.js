@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import Footer from '../../components/Footer';
+import LoadingCircle from '@/components/LoadingCircle';
 
 function CancelPageContent() {
   const searchParams = useSearchParams();
@@ -50,7 +51,7 @@ function CancelPageContent() {
 export default function CancelPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-400 to-red-300">
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingCircle />}>
         <CancelPageContent />
       </Suspense>
       <Footer className="mt-8" />

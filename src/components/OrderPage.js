@@ -1,5 +1,3 @@
-// src/components/OrderPage.js
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -8,13 +6,11 @@ import bars from '../constants';
 import { Sun, Umbrella } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-
 import { loadStripe } from '@stripe/stripe-js';
 import Footer from './Footer';
+import LoadingCircle from './LoadingCircle'; // Import the LoadingCircle component
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
-
-console.log(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
 export default function OrderPage({ barId, tableNumber }) {
   const [bar, setBar] = useState(null);
@@ -48,7 +44,6 @@ export default function OrderPage({ barId, tableNumber }) {
   };
 
   const placeOrder = () => {
-    // Filter to unique items and calculate quantity
     const uniqueItems = Array.from(new Set(order.map((item) => item.id))).map((id) => {
       const item = order.find((i) => i.id === id);
       return {
@@ -59,13 +54,14 @@ export default function OrderPage({ barId, tableNumber }) {
       };
     });
 
-    // Serialize the unique order items
     const serializedOrder = encodeURIComponent(JSON.stringify(uniqueItems));
     router.push(`/payment?barId=${barId}&tableNumber=${tableNumber}&order=${serializedOrder}`);
   };
 
   if (error) return <div className="text-red-500 text-center">{error}</div>;
-  if (!bar) return <div>Loading...</div>;
+
+  // Show the loading circle while the bar is being loaded
+  if (!bar) return <LoadingCircle />;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 to-teal-300 p-6 font-sans flex flex-col justify-between">
