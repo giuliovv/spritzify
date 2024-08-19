@@ -15,7 +15,7 @@ const Dashboard = ({ barId }) => {
     const ordersQuery = query(
       collection(db, 'orders'),
       where('barId', '==', barId),
-      where('status', '==', 'pending'),
+      where('status', 'in', ['pending', 'pagato']),
       orderBy('createdAt', 'asc')
     );
 
@@ -26,6 +26,7 @@ const Dashboard = ({ barId }) => {
           ...doc.data()
         }));
         setOrders(ordersData);
+        console.log(ordersData);
         setLoading(false);
       },
       (err) => {

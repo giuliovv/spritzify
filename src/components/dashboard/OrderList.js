@@ -37,7 +37,7 @@ const OrderList = ({ orders, onStatusChange }) => {
         orderedTableNumbers.map((tableNumber) => (
           <div key={tableNumber} className="mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
             <h3 className="text-lg font-bold text-white mb-2">Ombrellone numero: {tableNumber}</h3>
-            <p className="text-white mb-2">Totale complessivo: ${groupedOrders[tableNumber].totalAmount.toFixed(2)}</p>
+            <p className="text-white mb-2">Totale complessivo: €{groupedOrders[tableNumber].totalAmount.toFixed(2)}</p>
             <div className="mb-2">
               <h4 className="text-white font-semibold">Orari degli ordini:</h4>
               <ul className="list-disc list-inside text-gray-300">
@@ -55,17 +55,23 @@ const OrderList = ({ orders, onStatusChange }) => {
                   <li key={order.id} className="bg-white shadow rounded-lg p-4 text-black">
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-bold">ID ordine: {order.id}</span>
-                      <span className="px-2 py-1 rounded bg-yellow-200 text-yellow-800">
+                      <span
+                        className={`px-2 py-1 rounded ${
+                          order.status === 'pagato'
+                            ? 'bg-green-200 text-green-800'
+                            : 'bg-yellow-200 text-yellow-800'
+                        }`}
+                      >
                         {order.status}
                       </span>
                     </div>
-                    <p>Totale: ${order.totalAmount.toFixed(2)}</p>
+                    <p>Totale: €{order.totalAmount.toFixed(2)}</p>
                     <div className="mt-2">
                       <h4 className="font-semibold">Items:</h4>
                       <ul className="list-disc list-inside">
                         {order.items.map((item, index) => (
                           <li key={index}>
-                            {item.name} - Quantitá: {item.quantity} - Prezzo: ${item.price.toFixed(2)}
+                            {item.name} - Quantitá: {item.quantity} - Prezzo: €{item.price.toFixed(2)}
                           </li>
                         ))}
                       </ul>

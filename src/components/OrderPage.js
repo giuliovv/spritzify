@@ -10,6 +10,12 @@ import { db } from '../firebase/firebaseConfig';
 import { Sun, Umbrella, Martini } from 'lucide-react';
 import Image from 'next/image';
 
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
+console.log(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
 export default function OrderPage({ barId, tableNumber }) {
   const [bar, setBar] = useState(null);
   const [order, setOrder] = useState([]);
@@ -43,42 +49,57 @@ export default function OrderPage({ barId, tableNumber }) {
   const placeOrder = async () => {
     setIsLoading(true);
     setError(null);
+  
     try {
       const uniqueItems = Array.from(new Set(order.map(item => item.id)))
         .map(id => {
           const item = order.find(i => i.id === id);
           return {
-            id: item.id,
             name: item.name,
             price: item.price,
             quantity: drinkCount[item.id],
           };
         });
-
-      const orderData = {
-        barId,
-        tableNumber,
-        items: uniqueItems,
-        status: 'pending',
-        totalAmount: uniqueItems.reduce((sum, item) => sum + item.price * item.quantity, 0),
-        createdAt: serverTimestamp(),
-      };
-
-      const docRef = await addDoc(collection(db, 'orders'), orderData);
-      console.log('Order placed with ID: ', docRef.id);
-      setIsOrderPlaced(true);
+  
+      const totalAmount = uniqueItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  
+      const stripe = await stripePromise;
+      const response = await fetch('/api/checkout_sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          items: uniqueItems,
+          barId, // Include barId
+          tableNumber, // Include tableNumber
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const data = await response.json();
+      if (!data.sessionId) {
+        throw new Error('No sessionId in response');
+      }
+  
+      // Redirect to Stripe Checkout
+      const result = await stripe.redirectToCheckout({ sessionId: data.sessionId });
+  
+      if (result.error) {
+        setError(result.error.message);
+      }
     } catch (err) {
-      console.error('Error placing order: ', err);
+      console.error('Error placing order:', err);
       setError('Failed to place order. Please try again.');
     } finally {
       setIsLoading(false);
     }
   };
-
-  const startNewOrder = () => {
-    setOrder([]);
-    setIsOrderPlaced(false);
-  };
+  
+  
 
   if (error) return <div className="text-red-500 text-center">{error}</div>;
   if (!bar) return <div>Loading...</div>;
@@ -105,8 +126,6 @@ export default function OrderPage({ barId, tableNumber }) {
       </header>
 
       <main className="max-w-md mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg">
-        {!isOrderPlaced ? (
-          <>
             <div className="grid gap-4 mb-8">
               {bar.menu.map((drink) => (
                 <motion.div
@@ -127,7 +146,7 @@ export default function OrderPage({ barId, tableNumber }) {
                       <h3 className="text-xl font-semibold">
                         {drink.icon} {drink.name} 
                       </h3>
-                      <p className="text-gray-600">${drink.price}</p>
+                      <p className="text-gray-600">€{drink.price}</p>
                       {drinkCount[drink.id] > 0 && (
                         <p className="text-gray-700">Nel carrello: {drinkCount[drink.id]}</p>
                       )}
@@ -162,25 +181,6 @@ export default function OrderPage({ barId, tableNumber }) {
                 {isLoading ? 'Ordine in corso...' : 'Ordina'}
               </button>
             </div>
-          </>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-center"
-          >
-            <Martini size={64} className="mx-auto mb-4 text-teal-500" />
-            <h2 className="text-2xl font-bold mb-4 text-teal-800">L&apos;ordine ha avuto successo!</h2>
-            <p className="text-gray-600 mb-6">Il tuo ordine arriverá presto.</p>
-            <button
-              onClick={startNewOrder}
-              className="bg-blue-500 text-white px-6 py-2 rounded-full text-lg font-semibold hover:bg-blue-400 transition duration-300"
-            >
-              Ordina qualcos&apos;altro
-            </button>
-          </motion.div>
-        )}
       </main>
     </div>
   );
