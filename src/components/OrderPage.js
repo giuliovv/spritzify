@@ -9,6 +9,12 @@ import { Sun, Umbrella } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
+import { loadStripe } from '@stripe/stripe-js';
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
+console.log(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
 export default function OrderPage({ barId, tableNumber }) {
   const [bar, setBar] = useState(null);
   const [order, setOrder] = useState([]);
