@@ -137,7 +137,7 @@ export default function PaymentPage() {
           ))}
           {deliveryFee > 0 && (
             <div className="mt-4 text-right">
-              <p className="text-md font-bold">Costo consegna all'ombrellone: €{deliveryFee.toFixed(2)}</p>
+              <p className="text-md font-bold">Costo consegna all&apos;ombrellone: €{deliveryFee.toFixed(2)}</p>
             </div>
           )}
           <div className="mt-4 text-right">
