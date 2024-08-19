@@ -77,7 +77,7 @@ export default function OrderPage({ barId, tableNumber }) {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-xl text-white"
         >
-          <Umbrella className="inline mr-2" /> Ombrellone {tableNumber}
+          <Umbrella className="inline mr-2" /> {tableNumber < 1000 ? 'Ombrellone' : 'Tavolo'} {tableNumber%1000}
         </motion.p>
       </header>
 

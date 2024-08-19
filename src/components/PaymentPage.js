@@ -5,6 +5,8 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
 import { CreditCard, DollarSign, Smartphone } from 'lucide-react';
+import { db } from '../firebase/firebaseConfig'; // Import Firestore database
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore'; // Import Firestore methods
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -43,15 +45,6 @@ export default function PaymentPage() {
     setError(null);
 
     try {
-      const uniqueItems = Array.from(new Set(order.map(item => item.id))).map(id => {
-        const item = order.find(i => i.id === id);
-        return {
-          name: item.name,
-          price: item.price,
-          quantity: item.quantity,
-        };
-      });
-
       const stripe = await stripePromise;
       const response = await fetch('/api/checkout_sessions', {
         method: 'POST',
@@ -59,7 +52,7 @@ export default function PaymentPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          items: uniqueItems,
+          items: order,
           barId,
           tableNumber,
           deliveryFee,
@@ -88,11 +81,34 @@ export default function PaymentPage() {
     }
   };
 
+  const placeCashOrder = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await addDoc(collection(db, 'orders'), {
+        barId,
+        tableNumber,
+        items: order,
+        status: 'pending',
+        totalAmount,
+        createdAt: serverTimestamp(),
+      });
+
+      router.push(`/success?method=cash&barId=${barId}&tableNumber=${tableNumber}`);
+    } catch (err) {
+      console.error('Error placing cash order:', err);
+      setError('Failed to place order. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handlePaymentSelection = (method) => {
     if (method === 'stripe') {
       placeStripe();
     } else if (method === 'cash') {
-      router.push('/cash-payment');
+      placeCashOrder();
     } else if (method === 'satispay') {
       router.push('/satispay-payment');
     }
@@ -101,7 +117,7 @@ export default function PaymentPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 to-teal-300 p-6 font-sans">
       <div className="max-w-md mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg">
-        <h2 className="text-2xl font-bold mb-6 text-center">Order Summary</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">Sommario</h2>
 
         <div className="mb-6">
           {order.map((item) => (
@@ -112,7 +128,7 @@ export default function PaymentPage() {
               <div>
                 <h3 className="text-lg font-semibold">{item.name}</h3>
                 <p className="text-gray-600">€{item.price.toFixed(2)}</p>
-                <p className="text-gray-700">Quantity: {item.quantity}</p>
+                <p className="text-gray-700">Quantitá: {item.quantity}</p>
               </div>
               <div>
                 <p className="text-lg font-bold">€{(item.price * item.quantity).toFixed(2)}</p>
