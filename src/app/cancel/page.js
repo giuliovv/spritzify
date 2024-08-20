@@ -1,9 +1,9 @@
-// src/app/cancel/page.js
-
 "use client";
 
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
+import Footer from '../../components/Footer';
+import LoadingCircle from '@/components/LoadingCircle';
 
 function CancelPageContent() {
   const searchParams = useSearchParams();
@@ -15,7 +15,7 @@ function CancelPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-400 to-red-300 flex items-center justify-center">
+    <div className="flex-grow flex items-center justify-center">
       <div className="bg-white bg-opacity-20 p-8 rounded-xl backdrop-blur-md text-center shadow-lg">
         <div className="text-red-500 mb-4">
           <svg
@@ -50,9 +50,11 @@ function CancelPageContent() {
 
 export default function CancelPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <CancelPageContent />
-    </Suspense>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-gray-400 to-red-300">
+      <Suspense fallback={<LoadingCircle />}>
+        <CancelPageContent />
+      </Suspense>
+      <Footer className="mt-8" />
+    </div>
   );
 }
-

@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, where, onSnapshot, orderBy, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../../firebase/firebaseConfig';
 import OrderList from './OrderList';
+import LoadingCircle from '../LoadingCircle';
 
 const Dashboard = ({ barId }) => {
   const [orders, setOrders] = useState([]);
@@ -50,7 +51,7 @@ const Dashboard = ({ barId }) => {
     }
   };
 
-  if (loading) return <div>Caricamento ordini...</div>;
+  if (loading) return <LoadingCircle />;
   if (error) return <div>Errore: {error}</div>;
 
   return (
