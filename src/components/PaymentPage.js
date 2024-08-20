@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
-import { CreditCard, DollarSign, Smartphone } from 'lucide-react';
+import { CreditCard, Euro } from 'lucide-react'; // Import Euro icon
 import { db } from '../firebase/firebaseConfig'; // Import Firestore database
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'; // Import Firestore methods
 import Footer from './Footer'; // Import Footer
@@ -109,14 +109,15 @@ export default function PaymentPage() {
       placeStripe();
     } else if (method === 'cash') {
       placeCashOrder();
-    } else if (method === 'satispay') {
-      router.push('/satispay-payment');
     }
+    // else if (method === 'satispay') {
+    //   router.push('/satispay-payment');
+    // }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-400 to-teal-300 p-6 font-sans flex flex-col justify-between">
-      <div className="max-w-md mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg mb-8">
+      <div className="w-full max-w-2xl mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg mb-8">
         <h2 className="text-2xl font-bold mb-6 text-center">Sommario</h2>
 
         <div className="mb-6">
@@ -151,22 +152,22 @@ export default function PaymentPage() {
             className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-3 rounded-lg flex items-center justify-center transition duration-300 disabled:opacity-50 shadow-md"
             disabled={isLoading}
           >
-            <CreditCard className="mr-2" /> Paga con Stripe
+            <CreditCard className="mr-2" /> Paga Online
           </button>
           <button
             onClick={() => handlePaymentSelection('cash')}
             className="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-3 rounded-lg flex items-center justify-center transition duration-300 disabled:opacity-50 shadow-md"
             disabled={isLoading}
           >
-            <DollarSign className="mr-2" /> Paga in contanti
+            <Euro className="mr-2" /> Paga in contanti
           </button>
-          <button
+          {/* <button
             onClick={() => handlePaymentSelection('satispay')}
             className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-lg flex items-center justify-center transition duration-300 disabled:opacity-50 shadow-md"
             disabled={isLoading}
           >
             <Smartphone className="mr-2" /> Paga con Satispay
-          </button>
+          </button> */}
         </div>
 
         {isLoading && <p className="mt-4 text-center">Processando il pagamento...</p>}

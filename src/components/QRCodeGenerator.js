@@ -1,12 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import QRCode from 'qrcode.react';
 import jsPDF from 'jspdf';
-import bars from '../constants';
 
-export default function QRCodeGenerator() {
-  const [selectedBar, setSelectedBar] = useState('');
+export default function QRCodeGenerator({ barId }) {
   const [totalUmbrellas, setTotalUmbrellas] = useState('');
   const [totalTables, setTotalTables] = useState('');
   const [qrCodes, setQrCodes] = useState([]);
@@ -17,7 +15,7 @@ export default function QRCodeGenerator() {
       const umbrellaNumber = i + 1;
       return {
         label: `Ombrellone ${umbrellaNumber}`,
-        url: `${window.location.origin}/bar/${barId}/${umbrellaNumber}`, // changed to barid in the url
+        url: `${window.location.origin}/bar/${barId}/${umbrellaNumber}`, // Use barId from props
       };
     });
 
@@ -25,7 +23,7 @@ export default function QRCodeGenerator() {
       const tableNumber = i + 1001;
       return {
         label: `Tavolo ${tableNumber}`,
-        url: `${window.location.origin}/bar/${barId}/${tableNumber}`, // changed to barid in the url
+        url: `${window.location.origin}/bar/${barId}/${tableNumber}`, // Use barId from props
       };
     });
 
@@ -34,8 +32,7 @@ export default function QRCodeGenerator() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (selectedBar && totalUmbrellas && totalTables) {
-      const barId = bars.find(bar => bar.id === selectedBar)?.id;
+    if (totalUmbrellas && totalTables) {
       const codes = generateQrCodes(Number(totalUmbrellas), Number(totalTables), barId);
       setQrCodes(codes);
       setPdfGenerated(true);
@@ -66,28 +63,12 @@ export default function QRCodeGenerator() {
       y += 60; // Adjust spacing between QR codes
     });
 
-    const barId = selectedBar; // Use the selectedBar state to get the bar ID
     pdf.save(`QRcodes-${barId}.pdf`); // Save the PDF with the desired name
   };
 
   return (
     <div className="space-y-4">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label htmlFor="barSelect" className="block text-white mb-2">Seleziona Bar:</label>
-          <select
-            id="barSelect"
-            value={selectedBar}
-            onChange={(e) => setSelectedBar(e.target.value)}
-            className="w-full px-3 py-2 rounded bg-white bg-opacity-50 text-purple-900"
-            required
-          >
-            <option value="">Seleziona bar</option>
-            {bars.map((bar) => (
-              <option key={bar.id} value={bar.id}>{bar.name}</option>
-            ))}
-          </select>
-        </div>
         <div>
           <label htmlFor="totalUmbrellas" className="block text-white mb-2">Numero totale ombrelloni:</label>
           <input

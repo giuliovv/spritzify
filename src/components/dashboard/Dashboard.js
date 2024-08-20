@@ -56,7 +56,6 @@ const Dashboard = ({ barId }) => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Dashboard per Bar {barId}</h1>
       <OrderList orders={orders} onStatusChange={handleStatusChange} />
     </div>
   );
