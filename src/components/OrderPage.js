@@ -15,7 +15,6 @@ const MENU_CATEGORIES = ['Drink', 'Pizza', 'Breakfast'];
 export default function OrderPage({ barId, tableNumber }) {
   const [bar, setBar] = useState(null);
   const [order, setOrder] = useState([]);
-  const [isOrderPlaced, setIsOrderPlaced] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
