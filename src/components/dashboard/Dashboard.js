@@ -14,7 +14,7 @@ const Dashboard = ({ barId }) => {
     const ordersQuery = query(
       collection(db, "orders"),
       where("barId", "==", barId),
-      where("status", "in", ["pending", "pagato"]),
+      where("shipped", "==", false),
       orderBy("createdAt", "asc")
     );
 
@@ -67,7 +67,7 @@ const Dashboard = ({ barId }) => {
   const handleStatusChange = async (orderId) => {
     try {
       const orderRef = doc(db, "orders", orderId);
-      await updateDoc(orderRef, { status: "shipped" });
+      await updateDoc(orderRef, { shipped: true });
     } catch (err) {
       console.error("Error updating order status: ", err);
       setError("Non riesco ad aggiornare lo stato degli ordini. Per favore riprova.");
