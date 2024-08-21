@@ -30,16 +30,16 @@ const OrderList = ({ orders, onStatusChange }) => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-2 text-white">Ordini recenti</h2>
+      <h2 className="text-xl font-semibold mb-2 text-white">Ordini aperti</h2>
       {sortedOrders.length === 0 ? (
-        <p className="text-white">Non ci sono ordini per ora.</p>
+        <p className="text-white">Non ci sono ordini aperti.</p>
       ) : (
         orderedTableNumbers.map((tableNumber) => (
           <div key={tableNumber} className="mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
             <h3 className="text-lg font-bold text-white mb-2">Ombrellone numero: {tableNumber}</h3>
             <p className="text-white mb-2">Totale complessivo: €{groupedOrders[tableNumber].totalAmount.toFixed(2)}</p>
             <div className="mb-2">
-              <h4 className="text-white font-semibold">Orari degli ordini:</h4>
+              <h4 className="text-white font-semibold">Orario ordini:</h4>
               <ul className="list-disc list-inside text-gray-300">
                 {groupedOrders[tableNumber].datetimes.map((datetime, index) => (
                   <li key={index}>
@@ -49,7 +49,7 @@ const OrderList = ({ orders, onStatusChange }) => {
               </ul>
             </div>
             <div>
-              <h4 className="text-white font-semibold">Dettagli ordini:</h4>
+              <h4 className="text-white font-semibold">Dettaglio ordini:</h4>
               <ul className="space-y-4">
                 {groupedOrders[tableNumber].orders.map((order) => (
                   <li key={order.id} className="bg-white shadow rounded-lg p-4 text-black">
