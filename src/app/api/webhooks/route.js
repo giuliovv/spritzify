@@ -1,3 +1,5 @@
+// src/app/api/webhooks/route.js
+
 import { initializeApp, cert, getApps } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import Stripe from 'stripe';
@@ -22,6 +24,21 @@ export const dynamic = 'force-dynamic';
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
+const sendOrderEmail = async (newOrder) => {
+  try {
+    await fetch("/api/sendOrderEmail", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ order: newOrder }),
+    });
+    console.log("New order processed and email sent:", newOrder);
+  } catch (err) {
+    console.error("Error sending order email: ", err);
+  }
+};
+
 export async function POST(req) {
   let event;
   
@@ -43,20 +60,28 @@ export async function POST(req) {
     const session = event.data.object;
     const { barId, tableNumber, items } = session.metadata || {};
 
+    const req = {
+      barId,
+      tableNumber,
+      items: items ? JSON.parse(items) : [],
+      status: 'pagato',
+      totalAmount: session.amount_total / 100, // Convert from cents to EUR
+      createdAt: FieldValue.serverTimestamp(), // Use Firestore server timestamp
+      shipped: false,
+    }
+
     try {
-      await db.collection('orders').add({
-        barId,
-        tableNumber,
-        items: items ? JSON.parse(items) : [],
-        status: 'pagato',
-        totalAmount: session.amount_total / 100, // Convert from cents to EUR
-        createdAt: FieldValue.serverTimestamp(), // Use Firestore server timestamp
-        shipped: false,
-      });
+      await db.collection('orders').add(req);
       console.log(`Order added to Firestore for session ${session.id}`);
     } catch (error) {
       console.error('Error saving order to Firestore:', error);
       return new Response('Error saving order to Firestore.', { status: 500 });
+    }
+    try {
+      sendOrderEmail(req);
+    } catch (error) {
+      console.error('Error calling email function:', error);
+      return new Response('Error calling email function.', { status: 500 });
     }
   }
 
