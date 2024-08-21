@@ -3,6 +3,7 @@ const bars = [
         id: '100beach',
         name: '100 Beach',
         theme: 'from-purple-600 to-indigo-600',
+        email: 'pietro.fantini1998@gmail.com',
         menu: [
             { id: 1, name: 'Bulldog', price: 8, icon: '🍹', image: '/gintonic_image.webp', category: 'Gintoneria' },
             { id: 2, name: 'Mare', price: 10, icon: '🍹', image: '/gintonic_image.webp', category: 'Gintoneria' },

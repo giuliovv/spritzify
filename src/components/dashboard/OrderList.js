@@ -36,7 +36,7 @@ const OrderList = ({ orders, onStatusChange }) => {
       ) : (
         orderedTableNumbers.map((tableNumber) => (
           <div key={tableNumber} className="mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-            <h3 className="text-lg font-bold text-white mb-2">Ombrellone numero: {tableNumber}</h3>
+            <h3 className="text-lg font-bold text-white mb-2">{tableNumber < 1000 ? 'Ombrellone' : 'Tavolo'} numero: {tableNumber%1000}</h3>
             <p className="text-white mb-2">Totale complessivo: €{groupedOrders[tableNumber].totalAmount.toFixed(2)}</p>
             <div className="mb-2">
               <h4 className="text-white font-semibold">Orario ordini:</h4>
