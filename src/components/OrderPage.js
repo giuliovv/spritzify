@@ -3,14 +3,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import bars from '../constants';
+import { MENU_CATEGORIES, bars} from '../constants';
 import { Sun, Umbrella, Search } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Footer from './Footer';
 import LoadingCircle from './LoadingCircle';
 
-const MENU_CATEGORIES = ['Drink', 'Pizza', 'Breakfast', 'Risultati ricerca'];
+const MENU_CATEGORIES_WITH_SEARCH = [...MENU_CATEGORIES, 'Risultati ricerca'];
 
 export default function OrderPage({ barId, tableNumber }) {
   const [bar, setBar] = useState(null);
@@ -88,11 +88,11 @@ export default function OrderPage({ barId, tableNumber }) {
   const getSuggestions = () => {
     const currentHour = new Date().getHours();
     if (currentHour < 11) {
-      return bar?.menu.filter((item) => item.category === 'breakfast');
+      return bar?.menu.filter((item) => item.category.toLowerCase() === 'analcolici');
     } else if (currentHour < 15) {
-      return bar?.menu.filter((item) => item.category === 'pizza');
+      return bar?.menu.filter((item) => item.category.toLowerCase() === 'pizza');
     } else {
-      return bar?.menu.filter((item) => item.category === 'drink');
+      return bar?.menu.filter((item) => item.category.toLowerCase() === 'i classici');
     }
   };
 
@@ -136,7 +136,7 @@ export default function OrderPage({ barId, tableNumber }) {
               />
             </div>
             <div className="flex space-x-4 mt-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
-              {['Suggestions', ...MENU_CATEGORIES].map((category) => (
+              {['Suggestions', ...MENU_CATEGORIES_WITH_SEARCH].map((category) => (
                 <button
                   key={category}
                   onClick={() => {
