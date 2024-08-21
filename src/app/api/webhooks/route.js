@@ -51,6 +51,7 @@ export async function POST(req) {
         status: 'pagato',
         totalAmount: session.amount_total / 100, // Convert from cents to EUR
         createdAt: FieldValue.serverTimestamp(), // Use Firestore server timestamp
+        shipped: false,
       });
       console.log(`Order added to Firestore for session ${session.id}`);
     } catch (error) {

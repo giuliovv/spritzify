@@ -90,9 +90,10 @@ export default function PaymentPage() {
         barId,
         tableNumber,
         items: order,
-        status: 'pending',
+        status: 'da pagare',
         totalAmount,
         createdAt: serverTimestamp(),
+        shipped: false,
       });
 
       router.push(`/success?method=cash&barId=${barId}&tableNumber=${tableNumber}`);
