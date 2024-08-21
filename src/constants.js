@@ -59,7 +59,8 @@ const bars = [
             { id: 53, name: 'Crudo, Stracciatella, Cipolla Caramellata', price: 12, icon: '🍕', image: '/pizza_image.webp', category: 'Pizza' },
             { id: 54, name: 'Ciliegini Rossi e Gialli, Pesto e Stracciatella', price: 12, icon: '🍕', image: '/pizza_image.webp', category: 'Pizza' },
             { id: 55, name: 'Crema di Tartufo, Pancetta e Mozzarella', price: 13, icon: '🍕', image: '/pizza_image.webp', category: 'Pizza' },
-            { id: 56, name: 'Pala 1/2 metro Margherita', price: 21, icon: '🍕', image: '/pizza_image.webp', category: 'Pizza' }
+            { id: 56, name: 'Pala 1/2 metro Margherita', price: 21, icon: '🍕', image: '/pizza_image.webp', category: 'Pizza' },
+            { id: 56, name: 'Goleador', price: 0.5, icon: '🍕', image: '/pizza_image.webp', category: 'Test' }
         ]
     }
 ];
