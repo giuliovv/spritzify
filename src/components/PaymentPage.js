@@ -40,6 +40,21 @@ export default function PaymentPage() {
     return sum + item.price * item.quantity;
   }, 0) + deliveryFee;
 
+  const sendOrderEmail = async (newOrder) => {
+    try {
+      await fetch("/api/sendOrderEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ order: newOrder }),
+      });
+      console.log("New order processed and email sent:", newOrder);
+    } catch (err) {
+      console.error("Error sending order email: ", err);
+    }
+  };
+
   const placeStripe = async () => {
     setIsLoading(true);
     setError(null);
@@ -85,16 +100,20 @@ export default function PaymentPage() {
     setIsLoading(true);
     setError(null);
 
+    const req = {
+      barId,
+      tableNumber,
+      items: order,
+      status: 'da pagare',
+      totalAmount,
+      createdAt: serverTimestamp(),
+      shipped: false,
+    };
+
     try {
-      await addDoc(collection(db, 'orders'), {
-        barId,
-        tableNumber,
-        items: order,
-        status: 'da pagare',
-        totalAmount,
-        createdAt: serverTimestamp(),
-        shipped: false,
-      });
+      await addDoc(collection(db, 'orders'), req);
+
+      sendOrderEmail(req)
 
       router.push(`/success?method=cash&barId=${barId}&tableNumber=${tableNumber}`);
     } catch (err) {
