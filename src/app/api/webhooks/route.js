@@ -26,7 +26,8 @@ const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 const sendOrderEmail = async (newOrder) => {
   try {
-    await fetch("/api/sendOrderEmail", {
+    const baseUrl = process.env.NEXT_PUBLIC_VERCEL_URL || 'http://localhost:3000';
+    await fetch(`${baseUrl}/api/sendOrderEmail`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
