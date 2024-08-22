@@ -51,6 +51,7 @@ export async function POST(req) {
         items: JSON.stringify(items),
         deliveryFee: deliveryFee.toFixed(2),
       },
+      automatic_tax: {enabled: false},  // Disable automatic tax collection
     });
 
     console.log('Stripe session created:', session.id);
