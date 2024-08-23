@@ -27,15 +27,6 @@ const Dashboard = ({ barId }) => {
         }));
         setOrders(ordersData);
         console.log(ordersData);
-
-        // Detect new orders using docChanges and call the email API
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === "added") {
-            const newOrder = { id: change.doc.id, ...change.doc.data() };
-            sendOrderEmail(newOrder);
-          }
-        });
-
         setLoading(false);
       },
       (err) => {
@@ -48,21 +39,6 @@ const Dashboard = ({ barId }) => {
     // Cleanup function
     return () => unsubscribe();
   }, [barId]);
-
-  const sendOrderEmail = async (newOrder) => {
-    try {
-      await fetch("/api/sendOrderEmail", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ order: newOrder }),
-      });
-      console.log("New order processed and email sent:", newOrder);
-    } catch (err) {
-      console.error("Error sending order email: ", err);
-    }
-  };
 
   const handleStatusChange = async (orderId) => {
     try {

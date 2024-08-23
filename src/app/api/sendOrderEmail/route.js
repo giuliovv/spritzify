@@ -3,7 +3,7 @@ import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 
 const mailgun = new Mailgun(formData);
-const mg = mailgun.client({ username: 'api', key: process.env.MAILGUN_API_KEY });
+const mg = mailgun.client({ username: 'api', key: process.env.MAILGUN_API_KEY, url: 'https://api.eu.mailgun.net', });
 
 export async function POST(req) {
     console.log('API route hit');
@@ -31,8 +31,8 @@ export async function POST(req) {
         const itemsList = items.map(item => `- ${item.name}: ${item.quantity}`).join('\n');
 
         const data = {
-            from: `Notifica Ordine <${fromEmail}>`,
-            to: 'pietro.fantini1998@gmail.com',  // Replace with the desired email address
+            from: `Nuovo Ordine <${fromEmail}>`,
+            to: 'bagnorenata100@gmail.com',  // Replace with the desired email address
             subject: `Ricevuto Nuovo Ordine`,
             text: `
             Un nuovo ordine è stato piazzato. 
@@ -43,7 +43,6 @@ export async function POST(req) {
             
             Totale: ${totalAmount} EUR
             Status: ${status}
-            Creato il: ${new Date(createdAt.seconds * 1000).toLocaleString()}
             `,
         };
 

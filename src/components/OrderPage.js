@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Footer from './Footer';
 import LoadingCircle from './LoadingCircle';
+import { encryptOrder } from '../utils/orderEncryption';
 
 const MENU_CATEGORIES_WITH_SEARCH = [...MENU_CATEGORIES, 'Risultati ricerca'];
 
@@ -71,8 +72,10 @@ export default function OrderPage({ barId, tableNumber }) {
       };
     });
 
-    const serializedOrder = encodeURIComponent(JSON.stringify(uniqueItems));
-    router.push(`/payment?barId=${barId}&tableNumber=${tableNumber}&order=${serializedOrder}`);
+    const encryptedOrder = encryptOrder(uniqueItems);
+    localStorage.setItem('encryptedOrder', encryptedOrder);
+
+    router.push(`/payment?barId=${barId}&tableNumber=${tableNumber}`);
   };
 
   const getFilteredMenu = () => {

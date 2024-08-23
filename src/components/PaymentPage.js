@@ -1,12 +1,15 @@
+// src/components/PaymePage.js
+
 "use client";
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
-import { CreditCard, Euro } from 'lucide-react'; // Import Euro icon
-import { db } from '../firebase/firebaseConfig'; // Import Firestore database
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'; // Import Firestore methods
-import Footer from './Footer'; // Import Footer
+import { CreditCard, Euro } from 'lucide-react';
+import { db } from '../firebase/firebaseConfig';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import Footer from './Footer';
+import { decryptOrder } from '../utils/orderEncryption';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
@@ -15,30 +18,61 @@ export default function PaymentPage() {
   const searchParams = useSearchParams();
   const barId = searchParams.get('barId');
   const tableNumber = searchParams.get('tableNumber');
-  const orderUnparsed = searchParams.get('order');
-  const [order, setParsedOrder] = useState([]);
+  const [order, setOrder] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [deliveryFee, setDeliveryFee] = useState(0);
+  const [orderLoaded, setOrderLoaded] = useState(false);
 
   useEffect(() => {
-    if (orderUnparsed) {
-      try {
-        const parsedOrder = JSON.parse(decodeURIComponent(orderUnparsed));
-        setParsedOrder(parsedOrder);
+    const fetchOrder = async () => {
+      if (!orderLoaded) {
+        const encryptedOrder = localStorage.getItem('encryptedOrder');
+        console.log('Encrypted order from localStorage:', encryptedOrder);
+        if (encryptedOrder) {
+          try {
+            const decryptedOrder = decryptOrder(encryptedOrder);
+            console.log('Decrypted order:', decryptedOrder);
+            setOrder(decryptedOrder);
 
-        if (tableNumber && Number(tableNumber) < 1000) {
-          setDeliveryFee(1);
+            if (tableNumber && Number(tableNumber) < 1000) {
+              setDeliveryFee(1);
+            }
+
+            setOrderLoaded(true);
+          } catch (error) {
+            console.error("Failed to decrypt order:", error);
+            setError("Failed to retrieve order details. Please try again.");
+          }
+        } else {
+          console.log('No encrypted order found in localStorage');
+          setError("No order found. Please return to the menu and place an order.");
         }
-      } catch (error) {
-        console.error("Failed to parse and consolidate order:", error);
+        setIsLoading(false);
       }
-    }
-  }, [orderUnparsed, tableNumber]);
+    };
+
+    fetchOrder();
+  }, [tableNumber, orderLoaded]);
 
   const totalAmount = order.reduce((sum, item) => {
     return sum + item.price * item.quantity;
   }, 0) + deliveryFee;
+
+  const sendOrderEmail = async (newOrder) => {
+    try {
+      await fetch("/api/sendOrderEmail", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ order: newOrder }),
+      });
+      console.log("New order processed and email sent:", newOrder);
+    } catch (err) {
+      console.error("Error sending order email: ", err);
+    }
+  };
 
   const placeStripe = async () => {
     setIsLoading(true);
@@ -72,6 +106,8 @@ export default function PaymentPage() {
 
       if (result.error) {
         setError(result.error.message);
+      } else {
+        localStorage.removeItem('encryptedOrder');  // Clear the encrypted order after successful payment
       }
     } catch (err) {
       console.error('Error placing order:', err);
@@ -85,17 +121,22 @@ export default function PaymentPage() {
     setIsLoading(true);
     setError(null);
 
-    try {
-      await addDoc(collection(db, 'orders'), {
-        barId,
-        tableNumber,
-        items: order,
-        status: 'da pagare',
-        totalAmount,
-        createdAt: serverTimestamp(),
-        shipped: false,
-      });
+    const req = {
+      barId,
+      tableNumber,
+      items: order,
+      status: 'da pagare',
+      totalAmount,
+      createdAt: serverTimestamp(),
+      shipped: false,
+    };
 
+    try {
+      await addDoc(collection(db, 'orders'), req);
+
+      sendOrderEmail(req);
+
+      localStorage.removeItem('encryptedOrder');  // Clear the encrypted order after successful order placement
       router.push(`/success?method=cash&barId=${barId}&tableNumber=${tableNumber}`);
     } catch (err) {
       console.error('Error placing cash order:', err);
@@ -111,9 +152,6 @@ export default function PaymentPage() {
     } else if (method === 'cash') {
       placeCashOrder();
     }
-    // else if (method === 'satispay') {
-    //   router.push('/satispay-payment');
-    // }
   };
 
   return (
@@ -162,13 +200,6 @@ export default function PaymentPage() {
           >
             <Euro className="mr-2" /> Paga in contanti
           </button>
-          {/* <button
-            onClick={() => handlePaymentSelection('satispay')}
-            className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-3 rounded-lg flex items-center justify-center transition duration-300 disabled:opacity-50 shadow-md"
-            disabled={isLoading}
-          >
-            <Smartphone className="mr-2" /> Paga con Satispay
-          </button> */}
         </div>
 
         {isLoading && <p className="mt-4 text-center">Processando il pagamento...</p>}
