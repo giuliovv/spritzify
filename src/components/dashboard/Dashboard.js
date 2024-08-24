@@ -5,7 +5,9 @@ import React, { useState, useEffect } from "react";
 import { collection, query, where, onSnapshot, orderBy, updateDoc, doc, getDocs, startAfter, limit } from "firebase/firestore";
 import { db } from "../../firebase/firebaseConfig";
 import OrderList from "./OrderList";
+import OlderOrderList from "./OlderOrderList";
 import LoadingCircle from "../LoadingCircle";
+import { RefreshCw } from "lucide-react"; // Importing the Lucide icon
 
 const Dashboard = ({ barId }) => {
   const [activeOrders, setActiveOrders] = useState([]);
@@ -45,12 +47,10 @@ const Dashboard = ({ barId }) => {
 
   const fetchOlderOrders = async () => {
     setLoading(true);
-    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
     const olderOrdersQuery = query(
       collection(db, "orders"),
       where("barId", "==", barId),
       where("shipped", "==", true),
-      where("createdAt", ">", oneHourAgo),
       orderBy("createdAt", "desc"),
       limit(10)
     );
@@ -110,6 +110,10 @@ const Dashboard = ({ barId }) => {
     }
   };
 
+  const refreshOlderOrders = () => {
+    fetchOlderOrders(); // Refresh the older orders list
+  };
+
   if (loading) return <LoadingCircle />;
   if (error) return <div>Errore: {error}</div>;
 
@@ -136,7 +140,16 @@ const Dashboard = ({ barId }) => {
         <OrderList orders={activeOrders} onStatusChange={handleStatusChange} />
       ) : (
         <>
-          <OrderList orders={olderOrders} />
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold text-white">Ordini Inviati</h2>
+            <button
+              className="bg-green-500 text-white py-2 px-4 rounded flex items-center"
+              onClick={refreshOlderOrders}
+            >
+              <RefreshCw className="w-5 h-5" /> 
+            </button>
+          </div>
+          <OlderOrderList orders={olderOrders} />
           {lastVisible && (
             <button
               className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
