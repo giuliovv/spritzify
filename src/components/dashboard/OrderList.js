@@ -4,7 +4,7 @@ import React from 'react';
 
 const OrderList = ({ orders, onStatusChange }) => {
   // Sort orders by createdAt globally
-  const sortedOrders = orders.sort((a, b) => a.createdAt.seconds - b.createdAt.seconds);
+  const sortedOrders = orders.sort((a, b) => b.createdAt.seconds - a.createdAt.seconds);
 
   // Group sorted orders by tableNumber
   const groupedOrders = sortedOrders.reduce((acc, order) => {
@@ -25,18 +25,22 @@ const OrderList = ({ orders, onStatusChange }) => {
   const orderedTableNumbers = Object.keys(groupedOrders).sort((a, b) => {
     const firstOrderA = groupedOrders[a].orders[0].createdAt.seconds;
     const firstOrderB = groupedOrders[b].orders[0].createdAt.seconds;
-    return firstOrderA - firstOrderB;
+    return firstOrderB - firstOrderA;
   });
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-2 text-white">Ordini aperti</h2>
+      <h2 className="text-xl font-semibold mb-2 text-white">
+        {onStatusChange ? 'Ordini aperti' : 'Ordini precedenti'}
+      </h2>
       {sortedOrders.length === 0 ? (
-        <p className="text-white">Non ci sono ordini aperti.</p>
+        <p className="text-white">Non ci sono ordini da mostrare.</p>
       ) : (
         orderedTableNumbers.map((tableNumber) => (
           <div key={tableNumber} className="mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-            <h3 className="text-lg font-bold text-white mb-2">{tableNumber < 1000 ? 'Ombrellone' : 'Tavolo'} numero: {tableNumber%1000}</h3>
+            <h3 className="text-lg font-bold text-white mb-2">
+              {tableNumber < 1000 ? 'Ombrellone' : 'Tavolo'} numero: {tableNumber % 1000}
+            </h3>
             <p className="text-white mb-2">Totale complessivo: €{groupedOrders[tableNumber].totalAmount.toFixed(2)}</p>
             <div className="mb-2">
               <h4 className="text-white font-semibold">Orario ordini:</h4>
@@ -79,12 +83,14 @@ const OrderList = ({ orders, onStatusChange }) => {
                     <p className="text-sm text-gray-500 mt-2">
                       Ordinato alle: {new Date(order.createdAt.seconds * 1000).toLocaleString()}
                     </p>
-                    <button
-                      onClick={() => onStatusChange(order.id)}
-                      className="mt-4 bg-blue-500 text-white py-1 px-4 rounded"
-                    >
-                      Segna come inviato
-                    </button>
+                    {onStatusChange && (
+                      <button
+                        onClick={() => onStatusChange(order.id)}
+                        className="mt-4 bg-blue-500 text-white py-1 px-4 rounded"
+                      >
+                        Segna come inviato
+                      </button>
+                    )}
                   </li>
                 ))}
               </ul>
