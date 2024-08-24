@@ -1,8 +1,7 @@
-// src/firebase/firebaseConfig.js
-
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getMessaging, isSupported } from 'firebase/messaging';
 
 const firebaseConfig = {
   apiKey: "AIzaSyClOPIlYEhluvw1Dov4TU8DZbe5D6RQ1y4",
@@ -12,7 +11,6 @@ const firebaseConfig = {
   messagingSenderId: "511607028837",
   appId: "1:511607028837:web:5596164fdf67daee061a8c"
 };
-
 
 let firebaseApp;
 if (!getApps().length) {
@@ -24,4 +22,16 @@ if (!getApps().length) {
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp);
 
-export { auth, db };
+let messaging = null;
+
+if (typeof window !== 'undefined') {
+  isSupported().then((isSupported) => {
+    if (isSupported) {
+      messaging = getMessaging(firebaseApp);
+    }
+  }).catch((err) => {
+    console.error("Firebase messaging not supported", err);
+  });
+}
+
+export { auth, db, messaging, firebaseConfig };
