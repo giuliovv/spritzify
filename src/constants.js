@@ -21,7 +21,7 @@ const bars = [
             { id: 14, name: 'Spritz Aperol', price: 6.5, image: '/spritz_image.webp', category: 'I Classici' },
             { id: 15, name: 'Spritz Campari', price: 6.5, image: '/spritz_campari_image.webp', category: 'I Classici' },
             { id: 16, name: 'Spritz Select', price: 6.5, image: '/prosecco_image.webp', category: 'I Classici' },
-            { id: 17, name: 'Hugo', price: 5, image: '/prosecco_image.webp', category: 'I Classici' },
+            { id: 17, name: 'Hugo', price: 6.5, image: '/prosecco_image.webp', category: 'I Classici' },
             { id: 18, name: 'Americano', price: 6, image: '/old_fashioned_image.webp', category: 'I Classici' },
             { id: 19, name: 'Negroni', price: 7, image: '/old_fashioned_image.webp', category: 'I Classici' },
             { id: 20, name: 'Coca-Rum', price: 6, image: '/mojito_image.webp', category: 'I Classici' },
