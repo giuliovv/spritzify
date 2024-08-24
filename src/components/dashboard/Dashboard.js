@@ -1,21 +1,24 @@
 // src/components/dashboard/Dashboard.js
 
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
-import { collection, query, where, onSnapshot, orderBy, updateDoc, doc, setDoc } from "firebase/firestore";
+import { collection, query, where, onSnapshot, orderBy, updateDoc, doc, getDocs, startAfter, limit, setDoc } from "firebase/firestore";
 import { getToken } from "firebase/messaging";
 import { onAuthStateChanged } from "firebase/auth";
-import { db, auth, messaging, firebaseConfig } from "../../firebase/firebaseConfig";
+import { db, auth, messaging } from "../../firebase/firebaseConfig";
 import OrderList from "./OrderList";
 import LoadingCircle from "../LoadingCircle";
 import { useRouter } from 'next/navigation';
 
 const Dashboard = ({ barId }) => {
-  const [orders, setOrders] = useState([]);
+  const [activeOrders, setActiveOrders] = useState([]);
+  const [olderOrders, setOlderOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [user, setUser] = useState(null);
   const [notificationStatus, setNotificationStatus] = useState('not-requested');
+  const [activeTab, setActiveTab] = useState('active');
+  const [lastVisible, setLastVisible] = useState(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,26 +37,26 @@ const Dashboard = ({ barId }) => {
   }, [barId, router]);
 
   const fetchOrders = (userId) => {
-    const ordersQuery = query(
+    const activeOrdersQuery = query(
       collection(db, "orders"),
       where("barId", "==", barId),
       where("shipped", "==", false),
-      orderBy("createdAt", "asc")
+      orderBy("createdAt", "desc")
     );
 
     const unsubscribe = onSnapshot(
-      ordersQuery,
+      activeOrdersQuery,
       (snapshot) => {
         const ordersData = snapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
         }));
-        setOrders(ordersData);
+        setActiveOrders(ordersData);
         setLoading(false);
       },
       (err) => {
-        console.error("Error fetching orders: ", err);
-        setError("Non riesco a caricare gli ordini. Per favore riprova.");
+        console.error("Error fetching active orders: ", err);
+        setError("Non riesco a caricare gli ordini attivi. Per favore riprova.");
         setLoading(false);
       }
     );
@@ -65,7 +68,6 @@ const Dashboard = ({ barId }) => {
     try {
       const permission = await Notification.requestPermission();
       if (permission === 'granted') {
-        // Register service worker
         const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
         console.log('Service Worker registered with scope:', registration.scope);
 
@@ -111,6 +113,63 @@ const Dashboard = ({ barId }) => {
     }
   };
 
+  const fetchOlderOrders = async () => {
+    setLoading(true);
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
+    const olderOrdersQuery = query(
+      collection(db, "orders"),
+      where("barId", "==", barId),
+      where("shipped", "==", true),
+      where("createdAt", ">", oneHourAgo),
+      orderBy("createdAt", "desc"),
+      limit(10)
+    );
+
+    try {
+      const snapshot = await getDocs(olderOrdersQuery);
+      const ordersData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setOlderOrders(ordersData);
+      setLastVisible(snapshot.docs[snapshot.docs.length - 1]);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching older orders: ", err);
+      setError("Non riesco a caricare gli ordini precedenti. Per favore riprova.");
+      setLoading(false);
+    }
+  };
+
+  const loadMoreOlderOrders = async () => {
+    if (!lastVisible) return;
+
+    setLoading(true);
+    const moreOlderOrdersQuery = query(
+      collection(db, "orders"),
+      where("barId", "==", barId),
+      where("shipped", "==", true),
+      orderBy("createdAt", "desc"),
+      startAfter(lastVisible),
+      limit(10)
+    );
+
+    try {
+      const snapshot = await getDocs(moreOlderOrdersQuery);
+      const moreOrdersData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setOlderOrders([...olderOrders, ...moreOrdersData]);
+      setLastVisible(snapshot.docs[snapshot.docs.length - 1]);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error fetching more older orders: ", err);
+      setError("Non riesco a caricare altri ordini precedenti. Per favore riprova.");
+      setLoading(false);
+    }
+  };
+
   const handleStatusChange = async (orderId) => {
     try {
       const orderRef = doc(db, "orders", orderId);
@@ -147,7 +206,38 @@ const Dashboard = ({ barId }) => {
       {notificationStatus === 'not-supported' && (
         <p className="mb-4 text-yellow-500">Notifiche non sono supportate in questo browser.</p>
       )}
-      <OrderList orders={orders} onStatusChange={handleStatusChange} />
+      <div className="mb-4">
+        <button
+          className={`mr-2 px-4 py-2 rounded ${activeTab === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setActiveTab('active')}
+        >
+          Ordini Attivi
+        </button>
+        <button
+          className={`px-4 py-2 rounded ${activeTab === 'older' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => {
+            setActiveTab('older');
+            if (olderOrders.length === 0) fetchOlderOrders();
+          }}
+        >
+          Ordini Inviati
+        </button>
+      </div>
+      {activeTab === 'active' ? (
+        <OrderList orders={activeOrders} onStatusChange={handleStatusChange} />
+      ) : (
+        <>
+          <OrderList orders={olderOrders} />
+          {lastVisible && (
+            <button
+              className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+              onClick={loadMoreOlderOrders}
+            >
+              Carica altri ordini
+            </button>
+          )}
+        </>
+      )}
     </div>
   );
 };
