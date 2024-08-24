@@ -30,9 +30,13 @@ export async function POST(req) {
         // Generate a string for the items ordered, including their quantities
         const itemsList = items.map(item => `- ${item.name}: ${item.quantity}`).join('\n');
 
+        const recipientEmail = process.env.NODE_ENV === 'development' 
+            ? 'io@giuliovaccari.it'
+            : 'bagnorenata100@gmail.com';
+
         const data = {
             from: `Nuovo Ordine <${fromEmail}>`,
-            to: 'bagnorenata100@gmail.com',  // Replace with the desired email address
+            to: recipientEmail,
             subject: `Ricevuto Nuovo Ordine`,
             text: `
             Un nuovo ordine è stato piazzato. 
