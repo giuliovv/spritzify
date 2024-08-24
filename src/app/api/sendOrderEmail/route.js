@@ -43,8 +43,8 @@ export async function POST(req) {
         const itemsList = items.map(item => `- ${item.name}: ${item.quantity}`).join('\n');
 
         const data = {
-            from: `Notifica Ordine <${fromEmail}>`,
-            to: 'pietro.fantini1998@gmail.com',  // Replace with the desired email address
+            from: `Nuovo Ordine <${fromEmail}>`,
+            to: 'bagnorenata100@gmail.com',  // Replace with the desired email address
             subject: `Ricevuto Nuovo Ordine`,
             text: `
             Un nuovo ordine è stato piazzato. 
@@ -55,7 +55,6 @@ export async function POST(req) {
             
             Totale: ${totalAmount} EUR
             Status: ${status}
-            Creato il: ${new Date(createdAt.seconds * 1000).toLocaleString()}
             `,
         };
 
