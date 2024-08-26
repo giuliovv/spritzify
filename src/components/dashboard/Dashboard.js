@@ -1,7 +1,7 @@
 // src/components/dashboard/Dashboard.js
 
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { collection, query, where, onSnapshot, orderBy, updateDoc, doc, getDocs, startAfter, limit, setDoc } from "firebase/firestore";
 import { getToken } from "firebase/messaging";
 import { onAuthStateChanged } from "firebase/auth";
@@ -10,7 +10,18 @@ import OrderList from "./OrderList";
 import OlderOrderList from "./OlderOrderList";
 import LoadingCircle from "../LoadingCircle";
 import { useRouter } from 'next/navigation';
-import { RefreshCw } from "lucide-react";
+import { RefreshCw, Volume2, VolumeX } from "lucide-react";
+
+const Snackbar = ({ message, isVisible, onClose }) => {
+  if (!isVisible) return null;
+
+  return (
+    <div className="fixed bottom-4 left-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
+      {message}
+      <button onClick={onClose} className="ml-2 font-bold">×</button>
+    </div>
+  );
+};
 
 const Dashboard = ({ barId }) => {
   const [activeOrders, setActiveOrders] = useState([]);
@@ -22,6 +33,14 @@ const Dashboard = ({ barId }) => {
   const [activeTab, setActiveTab] = useState('active');
   const [lastVisible, setLastVisible] = useState(null);
   const router = useRouter();
+
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [isMuted, setIsMuted] = useState(false);
+
+  const audioRef = useRef(new Audio('/sounds/notification.mp3'));
+  const initialFetchRef = useRef(true);
+  const lastOrdersRef = useRef([]);
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
@@ -53,6 +72,25 @@ const Dashboard = ({ barId }) => {
           id: doc.id,
           ...doc.data(),
         }));
+
+        if (!initialFetchRef.current) {
+          const newOrders = ordersData.filter(order => 
+            !lastOrdersRef.current.find(lastOrder => lastOrder.id === order.id)
+          );
+
+          if (newOrders.length > 0) {
+            if (!isMuted) {
+              audioRef.current.play();
+            }
+            setSnackbarMessage('Nuovo ordine ricevuto!');
+            setShowSnackbar(true);
+            setTimeout(() => setShowSnackbar(false), 3000);
+          }
+        } else {
+          initialFetchRef.current = false;
+        }
+
+        lastOrdersRef.current = ordersData;
         setActiveOrders(ordersData);
         setLoading(false);
       },
@@ -65,6 +103,11 @@ const Dashboard = ({ barId }) => {
 
     return unsubscribe;
   };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
 
   const requestNotificationPermission = async () => {
     try {
@@ -189,7 +232,16 @@ const Dashboard = ({ barId }) => {
 
   return (
     <div className="p-4">
-      <h1>Ciao, {user?.email}</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1>Ciao, {user?.email}</h1>
+        <button
+          onClick={toggleMute}
+          className="p-2 text-blue-500 bg-transparent rounded-full hover:bg-blue-100 transition-colors"
+        >
+
+          {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+        </button>
+      </div>
       {notificationStatus === 'not-requested' && (
         <button 
           onClick={requestNotificationPermission}
@@ -251,6 +303,11 @@ const Dashboard = ({ barId }) => {
           )}
         </>
       )}
+      <Snackbar 
+        message={snackbarMessage} 
+        isVisible={showSnackbar} 
+        onClose={() => setShowSnackbar(false)} 
+      />
     </div>
   );
 };
