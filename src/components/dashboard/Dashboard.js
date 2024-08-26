@@ -224,7 +224,7 @@ const Dashboard = ({ barId }) => {
   };
 
   const refreshOlderOrders = () => {
-    fetchOlderOrders(); // Refresh the older orders list
+    fetchOlderOrders();
   };
 
   if (loading) return <LoadingCircle />;
