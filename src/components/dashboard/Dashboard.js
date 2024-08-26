@@ -247,14 +247,14 @@ const Dashboard = ({ barId }) => {
           {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
         </button>
       </div>
-      {notificationStatus === 'not-requested' && (
+      {/* {notificationStatus === 'not-requested' && (
         <button 
           onClick={requestNotificationPermission}
           className="mb-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
           Attiva notifiche
         </button>
-      )}
+      )} */}
       {notificationStatus === 'enabled' && (
         <p className="mb-4 text-green-500">Notifiche attive!</p>
       )}

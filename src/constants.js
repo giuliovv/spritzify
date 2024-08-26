@@ -116,11 +116,23 @@ const bars = [
             { id: 109, name: 'Sfuso Frizzante alla Spina - 1L', price: 11, image: '/images/frizzante_image.webp', category: 'Vino' },
             { id: 110, name: 'Sfuso Frizzante alla Spina - 1/2L', price: 6, image: '/images/frizzante_image.webp', category: 'Vino' }
         ]
+    },
+    {
+        id: 'testbar',
+        name: 'Test Bar',
+        theme: 'from-red-600 to-yellow-600',
+        email: 'testbar@example.com',
+        menu: [
+            { id: 1, name: 'Spritz Aperol', price: 6.5, image: '/images/spritz_image.webp', category: 'I Classici' },
+            { id: 2, name: 'Spritz Campari', price: 6.5, image: '/images/spritz_campari_image.webp', category: 'I Classici' },
+            { id: 3, name: 'Spritz Select', price: 6.5, image: '/images/prosecco_image.webp', category: 'I Classici' },
+            { id: 44, name: 'Margherita', price: 7, image: '/images/pizza_image.webp', category: 'Pizza' },
+            { id: 45, name: 'Diavola', price: 10, image: '/images/pizza_image.webp', category: 'Pizza' },
+            { id: 76, name: 'Tè pesca in lattina', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' },
+            { id: 77, name: 'Tè limone in lattina', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' },
+            { id: 59, name: 'Birra', price: 11, image: '/images/beer_image.webp', category: 'Birra' },
+        ]
     }
 ];
 
-// Dynamically extract unique categories from the menu
-const MENU_CATEGORIES = [...new Set(bars[0].menu.map(item => item.category))];
-
-export { bars, MENU_CATEGORIES };
 export default bars;

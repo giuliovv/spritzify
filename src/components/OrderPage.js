@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MENU_CATEGORIES, bars} from '../constants';
+import bars from '../constants';
 import { Sun, Umbrella, Search } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -11,21 +11,25 @@ import Footer from './Footer';
 import LoadingCircle from './LoadingCircle';
 import { encryptOrder } from '../utils/orderEncryption';
 
-const MENU_CATEGORIES_WITH_SEARCH = [...MENU_CATEGORIES, 'Risultati ricerca'];
-
 export default function OrderPage({ barId, tableNumber }) {
   const [bar, setBar] = useState(null);
   const [order, setOrder] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('Suggestions');
+  const [selectedCategory, setSelectedCategory] = useState('Suggeriti');
+  const [menuCategories, setMenuCategories] = useState([]);
   const router = useRouter();
   const [searchResults, setSearchResults] = useState([]);
 
   useEffect(() => {
     const selectedBar = bars.find((b) => b.id === barId);
     setBar(selectedBar);
+
+    if (selectedBar) {
+      const categories = [...new Set(selectedBar.menu.map(item => item.category))];
+      setMenuCategories([...categories, 'Risultati ricerca']);
+    }
   }, [barId]);
 
   useEffect(() => {
@@ -38,7 +42,7 @@ export default function OrderPage({ barId, tableNumber }) {
     } else {
       setSearchResults([]);
       if (selectedCategory === 'Risultati ricerca') {
-        setSelectedCategory('Suggestions');
+        setSelectedCategory('Suggeriti');
       }
     }
   }, [searchTerm, bar]);
@@ -81,7 +85,7 @@ export default function OrderPage({ barId, tableNumber }) {
   const getFilteredMenu = () => {
     if (selectedCategory === 'Risultati ricerca') {
       return searchResults;
-    } else if (selectedCategory === 'Suggestions') {
+    } else if (selectedCategory === 'Suggeriti') {
       return getSuggestions();
     } else {
       return bar?.menu.filter((item) => item.category.toLowerCase() === selectedCategory.toLowerCase());
@@ -139,7 +143,7 @@ export default function OrderPage({ barId, tableNumber }) {
               />
             </div>
             <div className="flex space-x-4 mt-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
-              {['Suggestions', ...MENU_CATEGORIES_WITH_SEARCH].map((category) => (
+              {['Suggeriti', ...menuCategories].map((category) => (
                 <button
                   key={category}
                   onClick={() => {
