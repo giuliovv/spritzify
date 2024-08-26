@@ -118,7 +118,7 @@ const Dashboard = ({ barId }) => {
 
         if (messaging) {
           const currentToken = await getToken(messaging, { 
-            vapidKey: 'BH5uCQfhQHK5nvFXAaw8iBKVLa5UdO4XaF44x_Eh6hZ_sC5lLwgcnZuF7hXfa7uNpPfz-oIWnaXHkVt0f3R3CD0',
+            vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
             serviceWorkerRegistration: registration
           });
           
