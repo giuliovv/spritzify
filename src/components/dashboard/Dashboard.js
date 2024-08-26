@@ -3,7 +3,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { collection, query, where, onSnapshot, orderBy, updateDoc, doc, getDocs, startAfter, limit, setDoc } from "firebase/firestore";
-import { getToken } from "firebase/messaging";
+import { getToken, onMessage } from "firebase/messaging";
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth, messaging } from "../../firebase/firebaseConfig";
 import OrderList from "./OrderList";
@@ -52,8 +52,13 @@ const Dashboard = ({ barId }) => {
       }
     });
 
+    const unsubscribeMessage = onMessage(messaging, (payload) => {
+      console.log('Received foreground message:', payload);
+    });
+
     return () => {
       unsubscribeAuth();
+      unsubscribeMessage();
     };
   }, [barId, router]);
 
