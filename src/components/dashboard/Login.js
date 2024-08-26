@@ -1,9 +1,11 @@
+// src/components/dashboard/Login.js
+
 "use client"
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebase/firebaseConfig';
-import Footer from '../Footer'; // Import Footer
+import Footer from '../Footer';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -16,7 +18,6 @@ const Login = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        // If user is already logged in, redirect to dashboard
         router.push(barId ? `/dashboard/${barId}` : '/dashboard');
       }
     });
@@ -29,7 +30,6 @@ const Login = () => {
     setError('');
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // After successful login, redirect to the dashboard with barId if available
       router.push(barId ? `/dashboard/${barId}` : '/dashboard');
     } catch (error) {
       setError(error.message);

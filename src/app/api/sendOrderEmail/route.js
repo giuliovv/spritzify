@@ -1,9 +1,21 @@
 import { NextResponse } from 'next/server';
 import formData from 'form-data';
 import Mailgun from 'mailgun.js';
+import { initializeApp, cert, getApps } from 'firebase-admin/app';
 
 const mailgun = new Mailgun(formData);
 const mg = mailgun.client({ username: 'api', key: process.env.MAILGUN_API_KEY, url: 'https://api.eu.mailgun.net', });
+
+// Initialize Firebase Admin SDK with service account
+if (!getApps().length) {
+    initializeApp({
+      credential: cert({
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+      }),
+    });
+  }
 
 export async function POST(req) {
     console.log('API route hit');
@@ -30,9 +42,13 @@ export async function POST(req) {
         // Generate a string for the items ordered, including their quantities
         const itemsList = items.map(item => `- ${item.name}: ${item.quantity}`).join('\n');
 
+        const recipientEmail = process.env.NODE_ENV === 'development' 
+            ? 'io@giuliovaccari.it'
+            : 'bagnorenata100@gmail.com';
+
         const data = {
             from: `Nuovo Ordine <${fromEmail}>`,
-            to: 'bagnorenata100@gmail.com',  // Replace with the desired email address
+            to: recipientEmail,
             subject: `Ricevuto Nuovo Ordine`,
             text: `
             Un nuovo ordine è stato piazzato. 
@@ -48,8 +64,39 @@ export async function POST(req) {
 
         const response = await mg.messages.create(process.env.MAILGUN_DOMAIN, data);
         console.log('Email sent successfully:', response);
+        
 
-        return NextResponse.json({ message: 'Email sent successfully' }, { status: 200 });
+        const usersRef = admin.firestore().collection('users');
+        const snapshot = await usersRef.where('barId', '==', barId).get();
+
+        if (!snapshot.empty) {
+            const tokens = [];
+            snapshot.forEach(doc => {
+                const userData = doc.data();
+                if (userData.fcmToken) {
+                    tokens.push(userData.fcmToken);
+                }
+            });
+
+            if (tokens.length > 0) {
+                const message = {
+                    notification: {
+                        title: 'Nuovo Ordine Ricevuto',
+                        body: `Un nuovo ordine è stato piazzato per il tavolo ${tableNumber}. Totale: ${totalAmount} EUR.`,
+                    },
+                    tokens: tokens, // Send to multiple device tokens
+                };
+
+                const response = await admin.messaging().sendMulticast(message);
+                console.log('Notifications sent successfully:', response);
+            } else {
+                console.log('No FCM tokens found for the given barId.');
+            }
+        } else {
+            console.log('No users found for the given barId.');
+        }
+
+        return NextResponse.json({ message: 'Email and notifications sent successfully' }, { status: 200 });
     } catch (error) {
         console.error('Error sending email:', error.message);
         return NextResponse.json({ error: error.message || 'Error sending email' }, { status: 500 });
