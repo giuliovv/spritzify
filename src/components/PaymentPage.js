@@ -134,7 +134,7 @@ export default function PaymentPage() {
     try {
       await addDoc(collection(db, 'orders'), req);
 
-      sendOrderEmail(req);
+      // sendOrderEmail(req);
 
       localStorage.removeItem('encryptedOrder');  // Clear the encrypted order after successful order placement
       router.push(`/success?method=cash&barId=${barId}&tableNumber=${tableNumber}`);

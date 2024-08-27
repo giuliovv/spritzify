@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="flex flex-col items-center justify-center p-4 bg-transparent border-t border-gray-200 h-24">
       <div className="flex items-center mb-2">
-        <Image src="/logo.png" alt="Logo" width={30} height={30} />
+        <Image src="/images/logo.png" alt="Logo" width={30} height={30} />
       </div>
       <div className="flex space-x-4 text-center text-sm">
         <Link href="/privacy-policy" className="text-white hover:underline">
