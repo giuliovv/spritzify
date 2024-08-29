@@ -1,5 +1,3 @@
-// src/app/api/checkout_session/route.js
-
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
@@ -7,7 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 export async function POST(req) {
   try {
-    const { items, barId, tableNumber, deliveryFee } = await req.json();
+    const { items, barId, tableNumber, deliveryFee, name, message } = await req.json();
     console.log('Received items:', items);
 
     const { nextUrl } = req;
@@ -50,8 +48,10 @@ export async function POST(req) {
         tableNumber,
         items: JSON.stringify(items),
         deliveryFee: deliveryFee.toFixed(2),
+        name: name || '',
+        message: message || '',
       },
-      automatic_tax: {enabled: false},  // Disable automatic tax collection
+      automatic_tax: { enabled: false },  // Disable automatic tax collection
     });
 
     console.log('Stripe session created:', session.id);

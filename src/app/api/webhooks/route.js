@@ -61,7 +61,7 @@ export async function POST(req) {
   // Handle the checkout session completed event
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-    const { barId, tableNumber, items } = session.metadata || {};
+    const { barId, tableNumber, items, name, message } = session.metadata || {};
 
     const req = {
       barId,
@@ -71,6 +71,8 @@ export async function POST(req) {
       totalAmount: session.amount_total / 100, // Convert from cents to EUR
       createdAt: FieldValue.serverTimestamp(), // Use Firestore server timestamp
       shipped: false,
+      name: name || '',
+      message: message || '',
     }
 
     try {

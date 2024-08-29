@@ -1,4 +1,4 @@
-// src/components/PaymePage.js
+// src/components/PaymentPage.js
 
 "use client";
 
@@ -23,6 +23,9 @@ export default function PaymentPage() {
   const [error, setError] = useState(null);
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [orderLoaded, setOrderLoaded] = useState(false);
+  const [name, setName] = useState('');
+  const [message, setMessage] = useState(''); // State for optional message
+  const [isLettino, setIsLettino] = useState(false);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -37,6 +40,10 @@ export default function PaymentPage() {
 
             if (tableNumber && Number(tableNumber) < 1000) {
               setDeliveryFee(1);
+            }
+
+            if (tableNumber && Number(tableNumber) >= 500 && Number(tableNumber) < 1000) {
+              setIsLettino(true);
             }
 
             setOrderLoaded(true);
@@ -78,6 +85,12 @@ export default function PaymentPage() {
     setIsLoading(true);
     setError(null);
 
+    if (isLettino && !name) {
+      setError('Per favore completa il campo nome prima di procedere.');
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const stripe = await stripePromise;
       const response = await fetch('/api/checkout_sessions', {
@@ -90,6 +103,8 @@ export default function PaymentPage() {
           barId,
           tableNumber,
           deliveryFee,
+          name: isLettino ? name : '',
+          message: message || '',
         }),
       });
 
@@ -121,6 +136,12 @@ export default function PaymentPage() {
     setIsLoading(true);
     setError(null);
 
+    if (isLettino && !name) {
+      setError('Please enter your name before proceeding.');
+      setIsLoading(false);
+      return;
+    }
+
     const req = {
       barId,
       tableNumber,
@@ -129,14 +150,16 @@ export default function PaymentPage() {
       totalAmount,
       createdAt: serverTimestamp(),
       shipped: false,
+      name: isLettino ? name : '',
+      message: message || '',
     };
 
     try {
       await addDoc(collection(db, 'orders'), req);
 
-      // sendOrderEmail(req);
+      sendOrderEmail(req);
 
-      localStorage.removeItem('encryptedOrder');  // Clear the encrypted order after successful order placement
+      localStorage.removeItem('encryptedOrder');
       router.push(`/success?method=cash&barId=${barId}&tableNumber=${tableNumber}`);
     } catch (err) {
       console.error('Error placing cash order:', err);
@@ -185,6 +208,32 @@ export default function PaymentPage() {
           </div>
         </div>
 
+        {isLettino && (
+          <div className="mb-6">
+            <label className="block text-gray-700 font-semibold mb-2">Nome*</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+              placeholder="Inserisci il tuo nome"
+              required
+            />
+          </div>
+        )}
+
+        {/* New Optional Message Field */}
+        <div className="mb-6">
+          <label className="block text-gray-700 font-semibold mb-2">Messaggio (opzionale)</label>
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md text-black"
+            placeholder="Aggiungi un messaggio (max 200 caratteri)"
+            maxLength={200}
+          />
+        </div>
+
         <div className="space-y-4">
           <button
             onClick={() => handlePaymentSelection('stripe')}
@@ -202,10 +251,10 @@ export default function PaymentPage() {
           </button>
         </div>
 
-        {isLoading && <p className="mt-4 text-center">Processando il pagamento...</p>}
-        {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
-      </div>
-      <Footer className="mt-8" />
+    {isLoading && <p className="mt-4 text-center">Processando il pagamento...</p>}
+    {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
+    </div>
+    <Footer className="mt-8" />
     </div>
   );
 }

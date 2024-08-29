@@ -80,6 +80,16 @@ const OrderList = ({ orders, onStatusChange }) => {
                         ))}
                       </ul>
                     </div>
+                    {order.name && (
+                      <p className="text-sm text-gray-800 mt-2">
+                        <strong>Nome:</strong> {order.name}
+                      </p>
+                    )}
+                    {order.message && (
+                      <p className="text-sm text-gray-800 mt-2">
+                        <strong>Messaggio:</strong> {order.message}
+                      </p>
+                    )}
                     <p className="text-sm text-gray-500 mt-2">
                       Ordinato alle: {new Date(order.createdAt.seconds * 1000).toLocaleString()}
                     </p>
