@@ -12,7 +12,7 @@ const Header = ({ barId }) => {
   return (
     <div className="flex justify-between items-center p-4 bg-transparent text-white border-b border-gray-200 relative">
       <h1 className="text-2xl font-bold">
-        Dashboard {bar?.name || 'Unknown Bar'}
+        {bar?.name || 'Unknown Bar'}
       </h1>
 
       {/* Burger button to open menu on all screen sizes */}

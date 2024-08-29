@@ -140,7 +140,7 @@ const bars = [
         theme: 'from-purple-600 to-indigo-600',
         email: 'pietro.fantini1998@gmail.com',
         menu: [
-            { id: 1, name: 'Gin Tonic o Lemon', price: 8, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 1, name: 'Gin Tonic', price: 8, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
             { id: 2, name: 'J.Rose', price: 12, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
             { id: 3, name: 'Malfy', price: 10, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
             { id: 4, name: 'Hendrick’s', price: 10, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
@@ -182,7 +182,8 @@ const bars = [
             { id: 40, name: 'Pestato Analcolico', price: 8, image: '/images/mojito_image.webp', category: 'Analcolici' },
             { id: 41, name: 'Tassoni', price: 3, image: '/images/bottle_image.webp', category: 'Analcolici' },
             { id: 42, name: 'Crodino', price: 3, image: '/images/bottle_image.webp', category: 'Analcolici' },
-            { id: 43, name: 'Bitter Rosso', price: 3, image: '/images/bottle_image.webp', category: 'Analcolici' }
+            { id: 43, name: 'Bitter Rosso', price: 3, image: '/images/bottle_image.webp', category: 'Analcolici' },
+            { id: 44, name: 'Gin Lemon', price: 8, image: '/images/gintonic_image.webp', category: 'Gintoneria' }
         ]
     }
 ];
