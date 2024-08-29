@@ -27,7 +27,7 @@ const OrderList = ({ orders, onStatusChange }) => {
   return (
     <div>
       {sortedOrders.length === 0 ? (
-        <p className="text-white text-3xl">Non ci sono ordini da mostrare.</p>
+        <p className="text-white text-3xl">Non ci sono ordini aperti.</p>
       ) : (
         orderedTableNumbers.map((tableNumber) => {
           let title;
@@ -51,7 +51,7 @@ const OrderList = ({ orders, onStatusChange }) => {
               <div>
                 <ul className="space-y-4 text-2xl">
                   {groupedOrders[tableNumber].orders.map((order) => {
-                    const totalPrice = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                    const totalPrice = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 1;
   
                     return (
                       <li key={order.id} className="bg-white shadow rounded-lg p-4 text-black">

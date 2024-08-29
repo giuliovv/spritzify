@@ -238,30 +238,38 @@ const Dashboard = ({ barId }) => {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-  <div>
-    <button
-      className={`mr-2 px-4 py-2 rounded ${activeTab === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'}`}
-      onClick={() => setActiveTab('active')}
-    >
-      Ordini Aperti
-    </button>
-    <button
-      className={`px-4 py-2 rounded ${activeTab === 'older' ? 'bg-blue-500 text-white' : 'bg-gray-300 text-gray-600'}`}
-      onClick={() => {
-        setActiveTab('older');
-        if (olderOrders.length === 0) fetchOlderOrders();
-      }}
-    >
-      Ordini Consegnati
-    </button>
-  </div>
-  <button
-    onClick={toggleMute}
-    className="p-2 text-blue-500 bg-transparent rounded-full hover:bg-blue-100 transition-colors"
-  >
-    {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
-  </button>
-</div>
+        <div className="flex items-center space-x-2">
+          <button
+            className={`px-3 py-1 text-sm rounded ${activeTab === 'active' ? 'bg-blue-500 text-white font-bold' : 'bg-gray-300 text-gray-600'}`}
+            onClick={() => setActiveTab('active')}
+          >
+            Ordini Aperti
+          </button>
+          <button
+            className={`px-3 py-1 text-sm rounded ${activeTab === 'older' ? 'bg-blue-500 text-white font-bold' : 'bg-gray-300 text-gray-600'}`}
+            onClick={() => {
+              setActiveTab('older');
+              if (olderOrders.length === 0) fetchOlderOrders();
+            }}
+          >
+            Ordini Consegnati
+          </button>
+          {activeTab === 'older' && (
+            <button
+              className="bg-green-500 text-white py-1 px-3 rounded flex items-center"
+              onClick={refreshOlderOrders}
+            >
+              <RefreshCw className="w-5 h-5" />
+            </button>
+          )}
+        </div>
+        <button
+          onClick={toggleMute}
+          className="p-2 text-blue-500 bg-transparent rounded-full hover:bg-blue-100 transition-colors"
+        >
+          {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
+        </button>
+      </div>
       {/* {notificationStatus === 'not-requested' && (
         <button 
           onClick={requestNotificationPermission}
@@ -286,15 +294,6 @@ const Dashboard = ({ barId }) => {
         <OrderList orders={activeOrders} onStatusChange={handleStatusChange} />
       ) : (
         <>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-white">Ordini Inviati</h2>
-            <button
-              className="bg-green-500 text-white py-2 px-4 rounded flex items-center"
-              onClick={refreshOlderOrders}
-            >
-              <RefreshCw className="w-5 h-5" /> 
-            </button>
-          </div>
           <OlderOrderList orders={olderOrders} />
           {lastVisible && (
             <button
