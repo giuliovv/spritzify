@@ -3,7 +3,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { collection, query, where, onSnapshot, orderBy, updateDoc, doc, getDocs, startAfter, limit, setDoc } from "firebase/firestore";
-import { getToken, onMessage } from "firebase/messaging";
+// import { getToken, onMessage } from "firebase/messaging";
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth, messaging } from "../../firebase/firebaseConfig";
 import OrderList from "./OrderList";
@@ -52,13 +52,13 @@ const Dashboard = ({ barId }) => {
       }
     });
 
-    const unsubscribeMessage = onMessage(messaging, (payload) => {
-      console.log('Received foreground message:', payload);
-    });
+    // const unsubscribeMessage = onMessage(messaging, (payload) => {
+    //   console.log('Received foreground message:', payload);
+    // });
 
     return () => {
       unsubscribeAuth();
-      unsubscribeMessage();
+      // unsubscribeMessage();
     };
   }, [barId, router]);
 
@@ -121,24 +121,24 @@ const Dashboard = ({ barId }) => {
         const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
         console.log('Service Worker registered with scope:', registration.scope);
 
-        if (messaging) {
-          const currentToken = await getToken(messaging, { 
-            vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
-            serviceWorkerRegistration: registration
-          });
+        // if (messaging) {
+        //   const currentToken = await getToken(messaging, { 
+        //     vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+        //     serviceWorkerRegistration: registration
+        //   });
           
-          if (currentToken && user) {
-            console.log('FCM token:', currentToken);
-            await saveUserToken(user.email, currentToken);
-            setNotificationStatus('enabled');
-          } else {
-            console.log('No registration token available.');
-            setNotificationStatus('error');
-          }
-        } else {
-          console.log('Firebase messaging is not supported in this browser');
-          setNotificationStatus('not-supported');
-        }
+        //   if (currentToken && user) {
+        //     console.log('FCM token:', currentToken);
+        //     await saveUserToken(user.email, currentToken);
+        //     setNotificationStatus('enabled');
+        //   } else {
+        //     console.log('No registration token available.');
+        //     setNotificationStatus('error');
+        //   }
+        // } else {
+        //   console.log('Firebase messaging is not supported in this browser');
+        //   setNotificationStatus('not-supported');
+        // }
       } else {
         console.log('Notification permission denied');
         setNotificationStatus('denied');
