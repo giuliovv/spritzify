@@ -115,11 +115,16 @@ const bars = [
             { id: 108, name: 'Frqanciacorta - Calice', price: 7, image: '/images/bianco_image.webp', category: 'Vino' },
             { id: 109, name: 'Sfuso Frizzante alla Spina - 1L', price: 11, image: '/images/frizzante_image.webp', category: 'Vino' },
             { id: 110, name: 'Sfuso Frizzante alla Spina - 1/2L', price: 6, image: '/images/frizzante_image.webp', category: 'Vino' }
-        ]
+        ],
+        menuSuggestions: [
+            { category: 'Analcolici', startHour: 0, endHour: 11 },
+            { category: 'Pizza', startHour: 11, endHour: 15 },
+            { category: 'I Classici', startHour: 15, endHour: 24 }
+          ]
     },
     {
         id: 'testbar',
-        name: 'Test Bar',
+        name: 'Il Bar Test',
         theme: 'from-red-600 to-yellow-600',
         email: 'testbar@example.com',
         menu: [
@@ -131,14 +136,19 @@ const bars = [
             { id: 76, name: 'Tè pesca in lattina', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' },
             { id: 77, name: 'Tè limone in lattina', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' },
             { id: 59, name: 'Birra', price: 11, image: '/images/beer_image.webp', category: 'Birra' },
-        ]
+        ],
+        menuSuggestions: [
+            { category: 'Analcolici', startHour: 0, endHour: 11 },
+            { category: 'Pizza', startHour: 11, endHour: 15 },
+            { category: 'I Classici', startHour: 15, endHour: 24 }
+          ]
     }
     ,
     {
         id: 'micamar',
         name: 'Micamar Bagno 99',
         theme: 'from-purple-600 to-indigo-600',
-        email: 'pietro.fantini1998@gmail.com',
+        email: 'micamar2018@gmail.com',
         menu: [
             { id: 1, name: 'Gin Tonic', price: 8, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
             { id: 2, name: 'J.Rose', price: 12, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
@@ -184,7 +194,12 @@ const bars = [
             { id: 42, name: 'Crodino', price: 3, image: '/images/bottle_image.webp', category: 'Analcolici' },
             { id: 43, name: 'Bitter Rosso', price: 3, image: '/images/bottle_image.webp', category: 'Analcolici' },
             { id: 44, name: 'Gin Lemon', price: 8, image: '/images/gintonic_image.webp', category: 'Gintoneria' }
-        ]
+        ],
+        menuSuggestions: [
+            { category: 'Analcolici', startHour: 0, endHour: 11 },
+            { category: 'Pre-Dinner e Aperitivi', startHour: 11, endHour: 15 },
+            { category: 'Le Nostre Specialità', startHour: 15, endHour: 24 }
+          ]
     }
 ];
 

@@ -48,8 +48,8 @@ export async function POST(req) {
                     switch (barId) {
                         case '100beach':
                             return 'bagnorenata100@gmail.com';
-                        case '99bar':
-                            return '99bar@example.com';
+                        case 'micamar':
+                            return 'micamar2018@gmail.com';
                         default:
                             return 'io@giuliovaccari.it';
                     }
