@@ -94,13 +94,15 @@ export default function OrderPage({ barId, tableNumber }) {
 
   const getSuggestions = () => {
     const currentHour = new Date().getHours();
-    if (currentHour < 11) {
-      return bar?.menu.filter((item) => item.category.toLowerCase() === 'analcolici');
-    } else if (currentHour < 15) {
-      return bar?.menu.filter((item) => item.category.toLowerCase() === 'pizza');
-    } else {
-      return bar?.menu.filter((item) => item.category.toLowerCase() === 'i classici');
-    }
+    const suggestionList = bar?.menuSuggestions || [];
+    
+    const suggestion = suggestionList.find(
+      (s) => currentHour >= s.startHour && currentHour < s.endHour
+    );
+  
+    return bar?.menu.filter(
+      (item) => item.category.toLowerCase() === suggestion?.category.toLowerCase()
+    );
   };
 
   const filteredMenu = getFilteredMenu();

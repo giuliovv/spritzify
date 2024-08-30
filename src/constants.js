@@ -115,11 +115,16 @@ const bars = [
             { id: 108, name: 'Frqanciacorta - Calice', price: 7, image: '/images/bianco_image.webp', category: 'Vino' },
             { id: 109, name: 'Sfuso Frizzante alla Spina - 1L', price: 11, image: '/images/frizzante_image.webp', category: 'Vino' },
             { id: 110, name: 'Sfuso Frizzante alla Spina - 1/2L', price: 6, image: '/images/frizzante_image.webp', category: 'Vino' }
-        ]
+        ],
+        menuSuggestions: [
+            { category: 'Analcolici', startHour: 0, endHour: 11 },
+            { category: 'Pizza', startHour: 11, endHour: 15 },
+            { category: 'I Classici', startHour: 15, endHour: 24 }
+          ]
     },
     {
         id: 'testbar',
-        name: 'Test Bar',
+        name: 'Il Bar Test',
         theme: 'from-red-600 to-yellow-600',
         email: 'testbar@example.com',
         menu: [
@@ -131,7 +136,70 @@ const bars = [
             { id: 76, name: 'Tè pesca in lattina', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' },
             { id: 77, name: 'Tè limone in lattina', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' },
             { id: 59, name: 'Birra', price: 11, image: '/images/beer_image.webp', category: 'Birra' },
-        ]
+        ],
+        menuSuggestions: [
+            { category: 'Analcolici', startHour: 0, endHour: 11 },
+            { category: 'Pizza', startHour: 11, endHour: 15 },
+            { category: 'I Classici', startHour: 15, endHour: 24 }
+          ]
+    }
+    ,
+    {
+        id: 'micamar',
+        name: 'Micamar Bagno 99',
+        theme: 'from-purple-600 to-indigo-600',
+        email: 'micamar2018@gmail.com',
+        menu: [
+            { id: 1, name: 'Gin Tonic', price: 8, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 2, name: 'J.Rose', price: 12, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 3, name: 'Malfy', price: 10, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 4, name: 'Hendrick’s', price: 10, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 5, name: 'Gin Mare', price: 10, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 6, name: 'Alba87 Gin', price: 10, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 7, name: 'Amuerte', price: 12, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 8, name: 'Nordes', price: 10, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 9, name: 'Bulldog', price: 8, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 10, name: 'Falterona 1654', price: 8, image: '/images/gintonic_image.webp', category: 'Gintoneria' },
+            { id: 11, name: 'Caipiroska', price: 8, image: '/images/mojito_image.webp', category: 'Pestati' },
+            { id: 12, name: 'Caipirinha', price: 8, image: '/images/mojito_image.webp', category: 'Pestati' },
+            { id: 13, name: 'Mojito', price: 8, image: '/images/mojito_image.webp', category: 'Pestati' },
+            { id: 14, name: 'Mixed Fruit Mojito', price: 8, image: '/images/mojito_image.webp', category: 'Pestati' },
+            { id: 15, name: 'Stra-Corona', price: 6, image: '/images/margarita_image.webp', category: 'Le Nostre Specialità' },
+            { id: 16, name: 'Sunsea', price: 8, image: '/images/spritz_campari_image.webp', category: 'Le Nostre Specialità' },
+            { id: 17, name: 'Orgasmo', price: 8, image: '/images/margarita_image.webp', category: 'Le Nostre Specialità' },
+            { id: 18, name: 'Barbie', price: 8, image: '/images/spritz_campari_image.webp', category: 'Le Nostre Specialità' },
+            { id: 19, name: 'Bob Marley', price: 8, image: '/images/margarita_image.webp', category: 'Le Nostre Specialità' },
+            { id: 20, name: 'Sexy Red', price: 8, image: '/images/spritz_campari_image.webp', category: 'Le Nostre Specialità' },
+            { id: 21, name: 'The Megan', price: 8, image: '/images/margarita_image.webp', category: 'Le Nostre Specialità' },
+            { id: 22, name: 'Spritz Aperol', price: 7, image: '/images/spritz_image.webp', category: 'Pre-Dinner e Aperitivi' },
+            { id: 23, name: 'Spritz Campari', price: 7, image: '/images/spritz_campari_image.webp', category: 'Pre-Dinner e Aperitivi' },
+            { id: 24, name: 'Hugo Spritz', price: 7, image: '/images/old_fashioned_image.webp', category: 'Pre-Dinner e Aperitivi' },
+            { id: 25, name: 'Negroni', price: 8, image: '/images/spritz_image.webp', category: 'Pre-Dinner e Aperitivi' },
+            { id: 26, name: 'Negroni Sbagliato', price: 7.5, image: '/images/spritz_campari_image.webp', category: 'Pre-Dinner e Aperitivi' },
+            { id: 27, name: 'Americano', price: 7, image: '/images/old_fashioned_image.webp', category: 'Pre-Dinner e Aperitivi' },
+            { id: 28, name: 'Love Mimosa', price: 8, image: '/images/spritz_image.webp', category: 'Pre-Dinner e Aperitivi' },
+            { id: 29, name: 'Campari Soda e Prosecco', price: 6, image: '/images/spritz_campari_image.webp', category: 'Pre-Dinner e Aperitivi' },
+            { id: 30, name: 'Sex on the Beach', price: 8, image: '/images/spritz_image.webp', category: 'Long Drinks' },
+            { id: 31, name: 'Long Island', price: 8, image: '/images/margarita_image.webp', category: 'Long Drinks' },
+            { id: 32, name: 'Wodka Lemon', price: 7, image: '/images/spritz_campari_image.webp', category: 'Long Drinks' },
+            { id: 33, name: 'Wodka Redbull', price: 7, image: '/images/old_fashioned_image.webp', category: 'Long Drinks' },
+            { id: 34, name: 'Coca Rum', price: 7, image: '/images/margarita_image.webp', category: 'Long Drinks' },
+            { id: 35, name: 'Moscow Mule', price: 8, image: '/images/spritz_image.webp', category: 'Long Drinks' },
+            { id: 36, name: 'Angelo Azzurro', price: 8, image: '/images/spritz_campari_image.webp', category: 'Long Drinks' },
+            { id: 37, name: 'Quattro Bianchi (con sciroppo)', price: 8, image: '/images/old_fashioned_image.webp', category: 'Long Drinks' },
+            { id: 38, name: 'Mojito Analcolico', price: 7, image: '/images/mojito_image.webp', category: 'Analcolici' },
+            { id: 39, name: 'Analcolico alla Frutta #99', price: 7, image: '/images/mojito_image.webp', category: 'Analcolici' },
+            { id: 40, name: 'Pestato Analcolico', price: 8, image: '/images/mojito_image.webp', category: 'Analcolici' },
+            { id: 41, name: 'Tassoni', price: 3, image: '/images/bottle_image.webp', category: 'Analcolici' },
+            { id: 42, name: 'Crodino', price: 3, image: '/images/bottle_image.webp', category: 'Analcolici' },
+            { id: 43, name: 'Bitter Rosso', price: 3, image: '/images/bottle_image.webp', category: 'Analcolici' },
+            { id: 44, name: 'Gin Lemon', price: 8, image: '/images/gintonic_image.webp', category: 'Gintoneria' }
+        ],
+        menuSuggestions: [
+            { category: 'Analcolici', startHour: 0, endHour: 11 },
+            { category: 'Pre-Dinner e Aperitivi', startHour: 11, endHour: 15 },
+            { category: 'Le Nostre Specialità', startHour: 15, endHour: 24 }
+          ]
     }
 ];
 

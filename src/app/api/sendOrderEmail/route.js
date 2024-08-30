@@ -43,8 +43,17 @@ export async function POST(req) {
         const itemsList = items.map(item => `- ${item.name}: ${item.quantity}`).join('\n');
 
         const recipientEmail = process.env.NODE_ENV === 'development' 
-            ? 'io@giuliovaccari.it'
-            : 'bagnorenata100@gmail.com';
+                ? 'io@giuliovaccari.it'
+                : (() => {
+                    switch (barId) {
+                        case '100beach':
+                            return 'bagnorenata100@gmail.com';
+                        case 'micamar':
+                            return 'micamar2018@gmail.com';
+                        default:
+                            return 'io@giuliovaccari.it';
+                    }
+                })();
 
         const data = {
             from: `Nuovo Ordine <${fromEmail}>`,

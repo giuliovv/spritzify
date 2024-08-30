@@ -3,7 +3,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { collection, query, where, onSnapshot, orderBy, updateDoc, doc, getDocs, startAfter, limit, setDoc } from "firebase/firestore";
-import { getToken, onMessage } from "firebase/messaging";
+// import { getToken, onMessage } from "firebase/messaging";
 import { onAuthStateChanged } from "firebase/auth";
 import { db, auth, messaging } from "../../firebase/firebaseConfig";
 import OrderList from "./OrderList";
@@ -52,13 +52,13 @@ const Dashboard = ({ barId }) => {
       }
     });
 
-    const unsubscribeMessage = onMessage(messaging, (payload) => {
-      console.log('Received foreground message:', payload);
-    });
+    // const unsubscribeMessage = onMessage(messaging, (payload) => {
+    //   console.log('Received foreground message:', payload);
+    // });
 
     return () => {
       unsubscribeAuth();
-      unsubscribeMessage();
+      // unsubscribeMessage();
     };
   }, [barId, router]);
 
@@ -121,24 +121,24 @@ const Dashboard = ({ barId }) => {
         const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
         console.log('Service Worker registered with scope:', registration.scope);
 
-        if (messaging) {
-          const currentToken = await getToken(messaging, { 
-            vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
-            serviceWorkerRegistration: registration
-          });
+        // if (messaging) {
+        //   const currentToken = await getToken(messaging, { 
+        //     vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
+        //     serviceWorkerRegistration: registration
+        //   });
           
-          if (currentToken && user) {
-            console.log('FCM token:', currentToken);
-            await saveUserToken(user.email, currentToken);
-            setNotificationStatus('enabled');
-          } else {
-            console.log('No registration token available.');
-            setNotificationStatus('error');
-          }
-        } else {
-          console.log('Firebase messaging is not supported in this browser');
-          setNotificationStatus('not-supported');
-        }
+        //   if (currentToken && user) {
+        //     console.log('FCM token:', currentToken);
+        //     await saveUserToken(user.email, currentToken);
+        //     setNotificationStatus('enabled');
+        //   } else {
+        //     console.log('No registration token available.');
+        //     setNotificationStatus('error');
+        //   }
+        // } else {
+        //   console.log('Firebase messaging is not supported in this browser');
+        //   setNotificationStatus('not-supported');
+        // }
       } else {
         console.log('Notification permission denied');
         setNotificationStatus('denied');
@@ -238,12 +238,35 @@ const Dashboard = ({ barId }) => {
   return (
     <div className="p-4">
       <div className="flex justify-between items-center mb-4">
-        <h1>Ciao, {user?.email}</h1>
+        <div className="flex items-center space-x-2">
+          <button
+            className={`px-3 py-1 text-sm rounded ${activeTab === 'active' ? 'bg-blue-500 text-white font-bold' : 'bg-gray-300 text-gray-600'}`}
+            onClick={() => setActiveTab('active')}
+          >
+            Ordini Aperti
+          </button>
+          <button
+            className={`px-3 py-1 text-sm rounded ${activeTab === 'older' ? 'bg-blue-500 text-white font-bold' : 'bg-gray-300 text-gray-600'}`}
+            onClick={() => {
+              setActiveTab('older');
+              if (olderOrders.length === 0) fetchOlderOrders();
+            }}
+          >
+            Ordini Consegnati
+          </button>
+          {activeTab === 'older' && (
+            <button
+              className="bg-green-500 text-white py-1 px-3 rounded flex items-center"
+              onClick={refreshOlderOrders}
+            >
+              <RefreshCw className="w-5 h-5" />
+            </button>
+          )}
+        </div>
         <button
           onClick={toggleMute}
           className="p-2 text-blue-500 bg-transparent rounded-full hover:bg-blue-100 transition-colors"
         >
-
           {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
         </button>
       </div>
@@ -267,36 +290,10 @@ const Dashboard = ({ barId }) => {
       {notificationStatus === 'not-supported' && (
         <p className="mb-4 text-yellow-500">Notifiche non sono supportate in questo browser.</p>
       )}
-      <div className="mb-4">
-        <button
-          className={`mr-2 px-4 py-2 rounded ${activeTab === 'active' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          onClick={() => setActiveTab('active')}
-        >
-          Ordini Attivi
-        </button>
-        <button
-          className={`px-4 py-2 rounded ${activeTab === 'older' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-          onClick={() => {
-            setActiveTab('older');
-            if (olderOrders.length === 0) fetchOlderOrders();
-          }}
-        >
-          Ordini Inviati
-        </button>
-      </div>
       {activeTab === 'active' ? (
         <OrderList orders={activeOrders} onStatusChange={handleStatusChange} />
       ) : (
         <>
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-semibold text-white">Ordini Inviati</h2>
-            <button
-              className="bg-green-500 text-white py-2 px-4 rounded flex items-center"
-              onClick={refreshOlderOrders}
-            >
-              <RefreshCw className="w-5 h-5" /> 
-            </button>
-          </div>
           <OlderOrderList orders={olderOrders} />
           {lastVisible && (
             <button

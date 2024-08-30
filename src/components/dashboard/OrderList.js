@@ -11,13 +11,9 @@ const OrderList = ({ orders, onStatusChange }) => {
     if (!acc[order.tableNumber]) {
       acc[order.tableNumber] = {
         orders: [],
-        totalAmount: 0,
-        datetimes: [],
       };
     }
     acc[order.tableNumber].orders.push(order);
-    acc[order.tableNumber].totalAmount += order.totalAmount;
-    acc[order.tableNumber].datetimes.push(order.createdAt);
     return acc;
   }, {});
 
@@ -30,73 +26,85 @@ const OrderList = ({ orders, onStatusChange }) => {
 
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-2 text-white">
-        {onStatusChange ? 'Ordini aperti' : 'Ordini precedenti'}
-      </h2>
       {sortedOrders.length === 0 ? (
-        <p className="text-white">Non ci sono ordini da mostrare.</p>
+        <p className="text-white text-3xl">Non ci sono ordini aperti.</p>
       ) : (
-        orderedTableNumbers.map((tableNumber) => (
-          <div key={tableNumber} className="mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
-            <h3 className="text-lg font-bold text-white mb-2">
-              {tableNumber < 1000 ? 'Ombrellone' : 'Tavolo'} numero: {tableNumber % 1000}
-            </h3>
-            <p className="text-white mb-2">Totale complessivo: €{groupedOrders[tableNumber].totalAmount.toFixed(2)}</p>
-            <div className="mb-2">
-              <h4 className="text-white font-semibold">Orario ordini:</h4>
-              <ul className="list-disc list-inside text-gray-300">
-                {groupedOrders[tableNumber].datetimes.map((datetime, index) => (
-                  <li key={index}>
-                    {new Date(datetime.seconds * 1000).toLocaleString()}
-                  </li>
-                ))}
-              </ul>
+        orderedTableNumbers.map((tableNumber) => {
+          let title;
+          if (tableNumber >= 500 && tableNumber < 1000) {
+            title = `Area Lettini ${tableNumber - 500}`;
+          } else if (tableNumber < 500) {
+            title = `Ombrellone ${tableNumber}`;
+          } else {
+            title = `Tavolo ${tableNumber - 1000}`;
+          }
+  
+          const orderCount = groupedOrders[tableNumber].orders.length;
+          const orderLabel = orderCount === 1 ? 'ordine' : 'ordini';
+  
+          return (
+            <div key={tableNumber} className="mb-6 p-4 bg-gray-800 rounded-lg shadow-lg">
+              <h3 className="text-3xl font-bold text-white mb-1 flex justify-between items-center">
+                {title}
+                <span className="text-xl font-normal text-right">({orderCount} {orderLabel})</span>
+              </h3>
+              <div>
+                <ul className="space-y-4 text-2xl">
+                  {groupedOrders[tableNumber].orders.map((order) => {
+                    const totalPrice = order.items.reduce((sum, item) => sum + (item.price * item.quantity), 0) + 1;
+  
+                    return (
+                      <li key={order.id} className="bg-white shadow rounded-lg p-4 text-black">
+                        <div className="flex justify-between items-center mb-2">
+                          <ul className="list-disc list-inside">
+                            {order.items.map((item, index) => (
+                              <li key={index} className="text-xl">
+                                {item.name} x {item.quantity}
+                              </li>
+                            ))}
+                          </ul>
+                          <span
+                            className={`px-2 py-1 text-base rounded ${
+                              order.status === 'pagato'
+                                ? 'bg-green-200 text-green-800'
+                                : 'bg-yellow-200 text-yellow-800'
+                            }`}
+                          >
+                            {order.status === 'pagato' ? 'Pagato' : 'Da pagare'}
+                          </span>
+                        </div>
+                        <p className="text-lg text-gray-800 mt-2">
+                          <strong>Totale:</strong> {totalPrice.toFixed(2)} €
+                        </p>
+                        {tableNumber >= 500 && tableNumber < 1000 && order.name && (
+                          <p className="text-lg text-gray-800 mt-2">
+                            <strong>Nome:</strong> {order.name}
+                          </p>
+                        )}
+                        {order.message && (
+                          <p className="text-lg text-gray-800 mt-2">
+                            <strong>Messaggio:</strong> {order.message}
+                          </p>
+                        )}
+                        <p className="text-sm text-gray-500 mt-2">
+                          Ordinato alle: {new Date(order.createdAt.seconds * 1000).toLocaleTimeString()} - {new Date(order.createdAt.seconds * 1000).toLocaleDateString()}
+                        </p>
+                        {onStatusChange && (
+                          <button
+                            onClick={() => onStatusChange(order.id)}
+                            className="mt-4 bg-blue-500 text-white text-sm py-1 px-4 rounded"
+                          >
+                            Segna come consegnato
+                          </button>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
             </div>
-            <div>
-              <h4 className="text-white font-semibold">Dettaglio ordini:</h4>
-              <ul className="space-y-4">
-                {groupedOrders[tableNumber].orders.map((order) => (
-                  <li key={order.id} className="bg-white shadow rounded-lg p-4 text-black">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-bold">ID ordine: {order.id}</span>
-                      <span
-                        className={`px-2 py-1 rounded ${
-                          order.status === 'pagato'
-                            ? 'bg-green-200 text-green-800'
-                            : 'bg-yellow-200 text-yellow-800'
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                    </div>
-                    <p>Totale: €{order.totalAmount.toFixed(2)}</p>
-                    <div className="mt-2">
-                      <h4 className="font-semibold">Items:</h4>
-                      <ul className="list-disc list-inside">
-                        {order.items.map((item, index) => (
-                          <li key={index}>
-                            {item.name} - Quantitá: {item.quantity} - Prezzo: €{item.price.toFixed(2)}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-2">
-                      Ordinato alle: {new Date(order.createdAt.seconds * 1000).toLocaleString()}
-                    </p>
-                    {onStatusChange && (
-                      <button
-                        onClick={() => onStatusChange(order.id)}
-                        className="mt-4 bg-blue-500 text-white py-1 px-4 rounded"
-                      >
-                        Segna come inviato
-                      </button>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        ))
+          );
+        })
       )}
     </div>
   );
