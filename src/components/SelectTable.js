@@ -7,7 +7,7 @@ export default function SelectTable() {
   const [selectedUmbrella, setSelectedUmbrella] = useState('');
   const [selectedTable, setSelectedTable] = useState('');
   const router = useRouter();
-  const barId = '100beach'; // Hardcoded bar ID
+  const barId = 'micamar'; // Hardcoded bar ID
 
   const handleOrderClick = () => {
     const selectedNumber = selectedUmbrella || selectedTable;

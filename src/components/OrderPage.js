@@ -107,6 +107,16 @@ export default function OrderPage({ barId, tableNumber }) {
 
   const filteredMenu = getFilteredMenu();
 
+  const getTableLabel = (tableNumber) => {
+    if (tableNumber > 1000) {
+      return `Tavolo ${tableNumber - 1000}`;
+    } else if (tableNumber >= 500) {
+      return `Area Lettini ${tableNumber - 500}`;
+    } else {
+      return `Ombrellone ${tableNumber}`;
+    }
+  };
+
   if (error) return <div className="text-red-500 text-center">{error}</div>;
 
   if (!bar) return <LoadingCircle />;
@@ -128,51 +138,51 @@ export default function OrderPage({ barId, tableNumber }) {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="text-xl text-white"
         >
-          <Umbrella className="inline mr-2" /> {tableNumber < 1000 ? 'Ombrellone' : 'Tavolo'} {tableNumber%1000}
+          <Umbrella className="inline mr-2" /> {getTableLabel(tableNumber)}
         </motion.p>
-        </header>
+      </header>
 
-        <main className="w-full max-w-xl mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg mb-8">
-          <div className="mb-8">
-            <div className="relative">
-              <Search className="absolute top-1/2 transform -translate-y-1/2 left-2 text-gray-500" />
-              <input
-                type="text"
-                placeholder="Search..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-white bg-opacity-50 focus:bg-opacity-75 transition-colors pl-8 pr-4 py-2 rounded-full w-full text-gray-700"
-              />
-            </div>
-            <div className="flex space-x-4 mt-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
-              {['Suggeriti', ...menuCategories].map((category) => (
-                <button
-                  key={category}
-                  onClick={() => {
-                    setSelectedCategory(category);
-                    if (category !== 'Risultati ricerca') {
-                      setSearchTerm('');
-                    }
-                  }}
-                  className={`px-4 py-2 rounded-full transition-colors mr-2 last:mr-0 ${
-                    selectedCategory === category
-                      ? 'bg-teal-500 text-white'
-                      : 'bg-white bg-opacity-50 hover:bg-opacity-75 text-gray-700'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
+      <main className="w-full max-w-xl mx-auto bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 shadow-lg mb-8">
+        <div className="mb-8">
+          <div className="relative">
+            <Search className="absolute top-1/2 transform -translate-y-1/2 left-2 text-gray-500" />
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="bg-white bg-opacity-50 focus:bg-opacity-75 transition-colors pl-8 pr-4 py-2 rounded-full w-full text-gray-700"
+            />
+          </div>
+          <div className="flex space-x-4 mt-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
+            {['Suggeriti', ...menuCategories].map((category) => (
+              <button
+                key={category}
+                onClick={() => {
+                  setSelectedCategory(category);
+                  if (category !== 'Risultati ricerca') {
+                    setSearchTerm('');
+                  }
+                }}
+                className={`px-4 py-2 rounded-full transition-colors mr-2 last:mr-0 ${
+                  selectedCategory === category
+                    ? 'bg-teal-500 text-white'
+                    : 'bg-white bg-opacity-50 hover:bg-opacity-75 text-gray-700'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
 
-            <div className="grid gap-4 mt-4">
-              {filteredMenu?.map((item) => (
-                <motion.div
-                  key={item.id}
-                  className="bg-white bg-opacity-50 p-4 rounded-lg flex justify-between items-center"
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.98 }}
-                >
+          <div className="grid gap-4 mt-4">
+            {filteredMenu?.map((item) => (
+              <motion.div
+                key={item.id}
+                className="bg-white bg-opacity-50 p-4 rounded-lg flex justify-between items-center"
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+              >
                 <div className="flex items-center">
                   <Image
                     src={item.image}
