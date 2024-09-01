@@ -51,7 +51,7 @@ export async function POST(req) {
                         case 'micamar':
                             return 'micamar2018@gmail.com';
                         default:
-                            return 'io@giuliovaccari.it';
+                            return 'pietro.fantini1998@gmail.com';
                     }
                 })();
 
@@ -68,6 +68,9 @@ export async function POST(req) {
             
             Totale: ${totalAmount} EUR
             Status: ${status}
+
+            Controlla l'ordine:
+            https://app.spiaggiato.it/dashboard/${barId}
             `,
         };
 

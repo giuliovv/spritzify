@@ -212,7 +212,11 @@ const bars = [
             { id: 60, name: 'Coca', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' },
             { id: 61, name: 'Coca Zero', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' },
             { id: 62, name: 'Fanta', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' },
-            { id: 63, name: 'Sprite', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' }
+            { id: 63, name: 'Sprite', price: 2.6, image: '/images/can_image.webp', category: 'Analcolici' },
+            { id: 64, name: 'Acqua Naturale 1/2L', price: 1.3, image: '/images/bottle_image.webp', category: 'Analcolici' },
+            { id: 65, name: 'Acqua Frizzante 1/2L', price: 1.3, image: '/images/bottle_image.webp', category: 'Analcolici' },
+            { id: 66, name: 'Acqua Naturale 1L', price: 2.2, image: '/images/bottle_image.webp', category: 'Analcolici' },
+            { id: 67, name: 'Acqua Frizzante 1L', price: 2.2, image: '/images/bottle_image.webp', category: 'Analcolici' }
         ],
         menuSuggestions: [
             { category: 'Analcolici', startHour: 0, endHour: 11 },
