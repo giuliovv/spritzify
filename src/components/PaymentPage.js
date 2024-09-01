@@ -199,7 +199,7 @@ export default function PaymentPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="text-center p-8 bg-white rounded-lg shadow-md text-black">
           <h1 className="text-2xl font-bold mb-4">Errore</h1>
-          <p className="mb-4">C'e' stato un problema con l'id del bar, per favore scansiona il QR code di nuovo</p>
+          <p className="mb-4">C&apos;é stato un problema con l&apos;id del bar, per favore scansiona il QR code di nuovo</p>
         </div>
       </div>
     );
