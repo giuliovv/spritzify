@@ -13,17 +13,6 @@ import { decryptOrder } from '../utils/orderEncryption';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
-const Snackbar = ({ message, isVisible, onClose }) => {
-  if (!isVisible) return null;
-
-  return (
-    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-red-500 text-white px-4 py-2 rounded-md shadow-lg">
-      {message}
-      <button onClick={onClose} className="ml-4 font-bold">×</button>
-    </div>
-  );
-};
-
 export default function PaymentPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -208,15 +197,9 @@ export default function PaymentPage() {
   if (!barId) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-center p-8 bg-white rounded-lg shadow-md">
+        <div className="text-center p-8 bg-white rounded-lg shadow-md text-black">
           <h1 className="text-2xl font-bold mb-4">Errore</h1>
           <p className="mb-4">C'e' stato un problema con l'id del bar, per favore scansiona il QR code di nuovo</p>
-          <button
-            onClick={() => router.back()}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-          >
-            Torna Indietro
-          </button>
         </div>
       </div>
     );
@@ -339,12 +322,6 @@ export default function PaymentPage() {
         {error && <p className="mt-4 text-red-500 text-center">{error}</p>}
       </div>
       <Footer className="mt-8" />
-      
-      <Snackbar
-        message="C'e' stato un problema con l'id del bar, per favore scansiona il QR code e riprova"
-        isVisible={showSnackbar}
-        onClose={() => setShowSnackbar(false)}
-      />
     </div>
   );
 }
