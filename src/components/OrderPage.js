@@ -75,12 +75,18 @@ export default function OrderPage({ barId, tableNumber }) {
         quantity: order.filter((i) => i.id === id).length,
       };
     });
-
+  
     const encryptedOrder = encryptOrder(uniqueItems);
     localStorage.setItem('encryptedOrder', encryptedOrder);
-
-    router.push(`/payment?barId=${barId}&tableNumber=${tableNumber}`);
+  
+    const tableNumberFiltered =
+      typeof tableNumber === 'string'
+        ? -(tableNumber.toLowerCase().charCodeAt(0) - 96)
+        : tableNumber;
+  
+    router.push(`/payment?barId=${barId}&tableNumber=${tableNumberFiltered}`);
   };
+  
 
   const getFilteredMenu = () => {
     if (selectedCategory === 'Risultati ricerca') {
@@ -108,7 +114,12 @@ export default function OrderPage({ barId, tableNumber }) {
   const filteredMenu = getFilteredMenu();
 
   const getTableLabel = (tableNumber) => {
-    if (tableNumber > 1000) {
+    if (typeof tableNumber === 'string' && /^[a-zA-Z]$/.test(tableNumber)) {
+      return `Ombrellone ${tableNumber.toUpperCase()}`;
+    } else if (tableNumber < 0) {
+      const char = String.fromCharCode(96 - tableNumber);
+      return `Ombrellone ${char}`;
+    } else if (tableNumber > 1000) {
       return `Tavolo ${tableNumber - 1000}`;
     } else if (tableNumber >= 500) {
       return `Area Lettini ${tableNumber - 500}`;
@@ -116,6 +127,7 @@ export default function OrderPage({ barId, tableNumber }) {
       return `Ombrellone ${tableNumber}`;
     }
   };
+  
 
   if (error) return <div className="text-red-500 text-center">{error}</div>;
 
