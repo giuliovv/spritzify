@@ -24,20 +24,26 @@ const OrderList = ({ orders, onStatusChange }) => {
     return firstOrderB - firstOrderA;
   });
 
+  const getTableLabel = (tableNumber) => {
+    if (tableNumber < 0) {
+      const char = String.fromCharCode(96 - tableNumber);
+      return `Ombrellone ${char}`;
+    } else if (tableNumber >= 500 && tableNumber < 1000) {
+      return `Area Lettini ${tableNumber - 500}`;
+    } else if (tableNumber < 500) {
+      return `Ombrellone ${tableNumber}`;
+    } else {
+      return `Tavolo ${tableNumber - 1000}`;
+    }
+  };
+
   return (
     <div>
       {sortedOrders.length === 0 ? (
         <p className="text-white text-3xl">Non ci sono ordini aperti.</p>
       ) : (
         orderedTableNumbers.map((tableNumber) => {
-          let title;
-          if (tableNumber >= 500 && tableNumber < 1000) {
-            title = `Area Lettini ${tableNumber - 500}`;
-          } else if (tableNumber < 500) {
-            title = `Ombrellone ${tableNumber}`;
-          } else {
-            title = `Tavolo ${tableNumber - 1000}`;
-          }
+          const title = getTableLabel(Number(tableNumber));
   
           const orderCount = groupedOrders[tableNumber].orders.length;
           const orderLabel = orderCount === 1 ? 'ordine' : 'ordini';
